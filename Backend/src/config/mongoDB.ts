@@ -1,4 +1,11 @@
 import mongoose, {Document, Schema} from "mongoose";
+import {env} from "./env";
+
+const connectMongo = async () => {
+  await mongoose.connect(env.MONGO_URI);
+  console.log("MongoDB connected");
+};
+
 
 export interface Review extends Document {
   productId: string;
@@ -36,4 +43,5 @@ const reviewSchema: Schema = new Schema(
   { timestamps: true }
   );
 
-  export default mongoose.model<Review>("Review", reviewSchema);
+  export default connectMongo;
+  export const ReviewModel = mongoose.model<Review>("Review", reviewSchema);

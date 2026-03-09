@@ -1,9 +1,1 @@
-// import db from "../config/mysql";
-/*
-export const getAllProducts = async () => {
-
-  const [rows] = await db.query("SELECT * FROM products");
-
-  return rows;
-};
-*/
+// logic for product management, including CRUD operations and business logic related to products
