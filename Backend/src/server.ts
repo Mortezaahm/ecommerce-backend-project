@@ -1,19 +1,31 @@
 import app from "./app";
-import { testMySQLConnection } from "./config/mysql";
+import mongoose from "mongoose";
+import pool from "./config/mysql";
+import dotenv from "dotenv";
+// import { testMySQLConnection } from "./config/mysql";
 // import connectMongoDB from "./config/mongoDB";
 // import connectionMySQL from "./config/mysql";
 
-const PORT = 3000;
+dotenv.config();
+const PORT = process.env.PORT || 3000;
 
 async function startServer() {
+  try {
+    // mysql test
+    const connection = await pool.getConnection();
+    console.log("MySQL connected");
+    connection.release();
 
-  //await connectMongoDB();
-  await testMySQLConnection();
+    // MongoDB test
+    await mongoose.connect(process.env.MONGO_URI!);
+    console.log("MongoDB Connected");
 
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-  });
-
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  } catch(error) {
+    console.log("Server failed to start", error);
+  }
 }
 
 startServer();
