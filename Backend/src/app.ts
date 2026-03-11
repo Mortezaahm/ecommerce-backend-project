@@ -9,6 +9,13 @@ app.use(express.json());
 // app.use("/api/auth", authRoutes);
 //app.use("/api/products", productRoutes);
 
+app.get("/health", (req,res) =>{
+    res.json({
+        status: "OK",
+        message:"BackEnd working"
+    })
+})
+
 app.get("/",(req,res) =>{
     res.send("Backend API is running!!!");
 })
