@@ -1,11 +1,503 @@
+<!--
+HTML-kommentar: Strukturöversikt
+1. Header-sektion innehåller sidans navigering
+   1.1 Navigationsfält med logotyp, menyknapp och användarikoner
+   1.2 Kontomeny med länkar för inloggning, registrering och kundsidor
+   1.3 Varukorgsmeny med produkter, kvantitetskontroller och totalsumma
+   1.4 Huvudmeny med navigationslänkar och produktmeny
+       1.4.1 Mega menu för produktkategorier
+2. Script-sektion innehåller externa JavaScript-filer
+   2.1 Bootstrap JavaScript-bibliotek
+   2.2 Lokal JavaScript-fil
+-->
+
 <!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>E-Commerce Web</title>
-  </head>
-  <body>
-    <h1>Hello World</h1>
-  </body>
+<html lang="sv">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <title>E-Commerce Web</title>
+
+        <link rel="stylesheet" href="style.css" />
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        />
+    </head>
+    <body>
+        <!-- 1. Header-sektion innehåller sidans navigering -->
+        <header>
+            <!-- 1.1 Navigationsfält med logotyp, menyknapp och användarikoner -->
+            <nav
+                class="navbar navbar-expand-lg border-bottom sticky-top shop-navbar"
+            >
+                <div class="container-fluid px-4 px-lg-5 mobile-nav-wrap">
+                    <!-- 1.1.1 Knapp för mobilmeny -->
+                    <button
+                        class="navbar-toggler"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#mainNavbar"
+                        aria-controls="mainNavbar"
+                        aria-expanded="false"
+                        aria-label="Visa navigation"
+                    >
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <!-- 1.1.2 Logotyp som länkar till startsidan -->
+                    <a
+                        class="navbar-brand fw-bold fs-4 mobile-centered-logo"
+                        id="logo"
+                        href="index.html"
+                    >
+                        Juice&Co
+                    </a>
+
+                    <!-- 1.1.3 Ikoner för konto och varukorg -->
+                    <div
+                        class="d-flex align-items-center gap-2 navbar-actions mobile-icons"
+                    >
+                        <!-- 1.2 Kontomeny med länkar för inloggning, registrering och kundsidor -->
+                        <div class="dropdown hover-dropdown account-dropdown">
+                            <button
+                                class="btn account-trigger"
+                                type="button"
+                                id="accountDropdown"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                                aria-label="Mitt konto"
+                            >
+                                <i class="bi bi-person"></i>
+                            </button>
+
+                            <div
+                                class="dropdown-menu account-menu"
+                                aria-labelledby="accountDropdown"
+                            >
+                                <div class="account-menu-inner">
+                                    <!-- 1.2.1 Inloggningslänk -->
+                                    <a
+                                        href="login.html"
+                                        class="account-login-btn"
+                                    >
+                                        Logga in
+                                    </a>
+
+                                    <!-- 1.2.2 Registreringslänk -->
+                                    <div class="account-register-row">
+                                        <a
+                                            href="register.html"
+                                            class="account-register-link"
+                                        >
+                                            Registrera
+                                        </a>
+                                    </div>
+
+                                    <hr />
+
+                                    <!-- 1.2.3 Länkar till kontosidor -->
+                                    <div class="account-guest-links">
+                                        <a
+                                            class="dropdown-item"
+                                            href="konto.html"
+                                        >
+                                            Min översikt
+                                        </a>
+                                        <a
+                                            class="dropdown-item"
+                                            href="mina-bestallningar.html"
+                                        >
+                                            Beställningar
+                                        </a>
+                                        <a
+                                            class="dropdown-item"
+                                            href="returer.html"
+                                        >
+                                            Returnera artikel
+                                        </a>
+                                        <a
+                                            class="dropdown-item"
+                                            href="kontakt.html"
+                                        >
+                                            Hjälp & kontakt
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 1.3 Varukorgsmeny med produkter, kvantitetskontroller och totalsumma -->
+                        <div class="dropdown hover-dropdown cart-wrapper">
+                            <button
+                                class="btn cart-trigger position-relative"
+                                type="button"
+                                id="cartDropdown"
+                                data-bs-toggle="dropdown"
+                                data-bs-auto-close="outside"
+                                aria-expanded="false"
+                                aria-label="Varukorg"
+                            >
+                                <i class="bi bi-cart3"></i>
+                                <span
+                                    class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-black cart-btn-badge"
+                                >
+                                    2
+                                </span>
+                            </button>
+
+                            <div
+                                class="dropdown-menu cart-dropdown"
+                                aria-labelledby="cartDropdown"
+                            >
+                                <div class="cart-menu-inner">
+                                    <!-- 1.3.1 Länk till varukorgen -->
+                                    <a
+                                        href="varukorg.html"
+                                        class="account-login-btn"
+                                    >
+                                        Till varukorgen
+                                    </a>
+
+                                    <!-- 1.3.2 Lista med produkter i varukorgen -->
+                                    <div id="cartItems">
+                                        <!-- 1.3.2.1 Första produkten -->
+                                        <div
+                                            class="cart-item d-flex align-items-start gap-3 mb-3"
+                                            data-price="899"
+                                        >
+                                            <img
+                                                src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=300&q=80"
+                                                alt="Sneakers"
+                                                class="cart-item-img"
+                                            />
+                                            <div class="flex-grow-1">
+                                                <div class="fw-semibold">
+                                                    Sneakers Run X
+                                                </div>
+                                                <div class="small">899 kr</div>
+
+                                                <div class="cart-controls mt-2">
+                                                    <button
+                                                        class="qty-btn minus"
+                                                    >
+                                                        −
+                                                    </button>
+                                                    <span class="qty-value">
+                                                        1
+                                                    </span>
+                                                    <button
+                                                        class="qty-btn plus"
+                                                    >
+                                                        +
+                                                    </button>
+                                                    <button class="remove-btn">
+                                                        Ta bort
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- 1.3.2.2 Andra produkten -->
+                                        <div
+                                            class="cart-item d-flex align-items-start gap-3 mb-3"
+                                            data-price="1299"
+                                        >
+                                            <img
+                                                src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=300&q=80"
+                                                alt="Jacka"
+                                                class="cart-item-img"
+                                            />
+                                            <div class="flex-grow-1">
+                                                <div class="fw-semibold">
+                                                    Urban Jacket
+                                                </div>
+                                                <div class="small">1299 kr</div>
+
+                                                <div class="cart-controls mt-2">
+                                                    <button
+                                                        class="qty-btn minus"
+                                                    >
+                                                        −
+                                                    </button>
+                                                    <span class="qty-value">
+                                                        1
+                                                    </span>
+                                                    <button
+                                                        class="qty-btn plus"
+                                                    >
+                                                        +
+                                                    </button>
+                                                    <button class="remove-btn">
+                                                        Ta bort
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <hr />
+
+                                    <!-- 1.3.3 Totalsumma -->
+                                    <div
+                                        class="d-flex justify-content-between mb-3"
+                                    >
+                                        <span class="fw-semibold">Summa</span>
+                                        <span class="fw-bold" id="cartTotal">
+                                            2198 kr
+                                        </span>
+                                    </div>
+
+                                    <!-- 1.3.4 Länk till kassan -->
+                                    <div class="d-grid gap-2">
+                                        <a
+                                            href="checkout.html"
+                                            class="btn btn-outline-secondary"
+                                        >
+                                            Kassan
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 1.4 Huvudmeny med navigationslänkar och produktmeny -->
+                    <div class="collapse navbar-collapse" id="mainNavbar">
+                        <ul class="navbar-nav ms-lg-5 gap-lg-2 mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="index.html">
+                                    Hem
+                                </a>
+                            </li>
+
+                            <li class="nav-item dropdown position-static">
+                                <a
+                                    class="nav-link dropdown-toggle"
+                                    href="#"
+                                    id="productsDropdown"
+                                    role="button"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false"
+                                >
+                                    Produkter
+                                </a>
+
+                                <!-- 1.4.1 Mega menu för produktkategorier -->
+                                <div
+                                    class="dropdown-menu mega-menu w-100 mt-0 border-0"
+                                    aria-labelledby="productsDropdown"
+                                >
+                                    <div class="container py-4">
+                                        <div
+                                            class="row g-4 justify-content-center"
+                                        >
+                                            <div class="col-lg-10">
+                                                <div class="row g-3">
+                                                    <!-- 1.4.1.1 Produktkategori: Sneakers -->
+                                                    <div
+                                                        class="col-sm-6 col-lg-3"
+                                                    >
+                                                        <a
+                                                            href="produkt-skor.html"
+                                                            class="mega-product-card"
+                                                        >
+                                                            <img
+                                                                src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=500&q=80"
+                                                                alt="Sneakers"
+                                                                class="img-fluid mega-product-img"
+                                                            />
+                                                            <div
+                                                                class="mega-product-body"
+                                                            >
+                                                                <h6
+                                                                    class="mb-1"
+                                                                >
+                                                                    Sneakers
+                                                                </h6>
+                                                                <p
+                                                                    class="small mb-0"
+                                                                >
+                                                                    Sportig
+                                                                    vardagsstil
+                                                                </p>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+
+                                                    <!-- 1.4.1.2 Produktkategori: Jackor -->
+                                                    <div
+                                                        class="col-sm-6 col-lg-3"
+                                                    >
+                                                        <a
+                                                            href="produkt-jacka.html"
+                                                            class="mega-product-card"
+                                                        >
+                                                            <img
+                                                                src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=500&q=80"
+                                                                alt="Jackor"
+                                                                class="img-fluid mega-product-img"
+                                                            />
+                                                            <div
+                                                                class="mega-product-body"
+                                                            >
+                                                                <h6
+                                                                    class="mb-1"
+                                                                >
+                                                                    Jackor
+                                                                </h6>
+                                                                <p
+                                                                    class="small mb-0"
+                                                                >
+                                                                    Snyggt och
+                                                                    funktionellt
+                                                                </p>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+
+                                                    <!-- 1.4.1.3 Produktkategori: Klockor -->
+                                                    <div
+                                                        class="col-sm-6 col-lg-3"
+                                                    >
+                                                        <a
+                                                            href="produkt-klocka.html"
+                                                            class="mega-product-card"
+                                                        >
+                                                            <img
+                                                                src="https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=500&q=80"
+                                                                alt="Klockor"
+                                                                class="img-fluid mega-product-img"
+                                                            />
+                                                            <div
+                                                                class="mega-product-body"
+                                                            >
+                                                                <h6
+                                                                    class="mb-1"
+                                                                >
+                                                                    Klockor
+                                                                </h6>
+                                                                <p
+                                                                    class="small mb-0"
+                                                                >
+                                                                    Minimalistisk
+                                                                    design
+                                                                </p>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+
+                                                    <!-- 1.4.1.4 Produktkategori: Väskor -->
+                                                    <div
+                                                        class="col-sm-6 col-lg-3"
+                                                    >
+                                                        <a
+                                                            href="produkt-vaska.html"
+                                                            class="mega-product-card"
+                                                        >
+                                                            <img
+                                                                src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=500&q=80"
+                                                                alt="Väskor"
+                                                                class="img-fluid mega-product-img"
+                                                            />
+                                                            <div
+                                                                class="mega-product-body"
+                                                            >
+                                                                <h6
+                                                                    class="mb-1"
+                                                                >
+                                                                    Väskor
+                                                                </h6>
+                                                                <p
+                                                                    class="small mb-0"
+                                                                >
+                                                                    För jobb och
+                                                                    fritid
+                                                                </p>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                </div>
+
+                                                <!-- 1.4.1.5 Länk till alla produkter -->
+                                                <div class="mt-4 text-center">
+                                                    <a
+                                                        href="produkter.html"
+                                                        class="btn btn-shop-primary"
+                                                    >
+                                                        Visa alla produkter
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="om-oss.html">
+                                    Om oss
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="kontakt.html">
+                                    Kontakt
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <main></main>
+
+        <footer class="site-footer">
+            <div class="container py-4">
+                <div class="row gy-4">
+                    <div class="col-md-4">
+                        <h5 class="footer-title">Juice&Co</h5>
+                        <p class="footer-text mb-0">
+                            Trendiga produkter för vardag, jobb och fritid.
+                        </p>
+                    </div>
+
+                    <div class="col-md-4">
+                        <h6 class="footer-heading">Snabblänkar</h6>
+                        <ul class="footer-links list-unstyled mb-0">
+                            <li><a href="index.html">Hem</a></li>
+                            <li><a href="produkter.html">Produkter</a></li>
+                            <li><a href="om-oss.html">Om oss</a></li>
+                            <li><a href="kontakt.html">Kontakt</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="col-md-4">
+                        <h6 class="footer-heading">Kontakt</h6>
+                        <p class="footer-text mb-1">info@juiceco.se</p>
+                        <p class="footer-text mb-0">08-123 45 67</p>
+                    </div>
+                </div>
+
+                <hr class="footer-divider" />
+
+                <div class="text-center footer-bottom">
+                    © 2026 Juice&Co — Alla rättigheter förbehållna
+                </div>
+            </div>
+        </footer>
+
+        <!-- 2. Script-sektion innehåller externa JavaScript-filer -->
+        <!-- 2.1 Bootstrap JavaScript-bibliotek -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+        <!-- 2.2 Lokal JavaScript-fil -->
+        <script src="./index.js"></script>
+    </body>
 </html>
