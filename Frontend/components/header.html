@@ -1,0 +1,277 @@
+<!--
+HTML-kommentar: Strukturöversikt
+1. Header innehåller sidans navigation
+   1.1 Navbar med logotyp, menyknapp och ikoner
+   1.2 Kontomeny
+   1.3 Varukorg
+   1.4 Huvudmeny med produktmeny
+-->
+
+<!-- 1. Header och navigation -->
+<header>
+    <!-- 1.1 Navbar -->
+    <nav class="navbar navbar-expand-lg border-bottom sticky-top shop-navbar">
+        <div class="container-fluid px-4 px-lg-5 mobile-nav-wrap">
+            <!-- Mobilmeny-knapp -->
+            <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#mainNavbar"
+                aria-controls="mainNavbar"
+                aria-expanded="false"
+                aria-label="Visa navigation"
+            >
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Logotyp -->
+            <a
+                class="navbar-brand fw-bold fs-4 mobile-centered-logo"
+                id="logo"
+                href="/Frontend"
+            >
+                Juice&Co
+            </a>
+
+            <!-- Ikoner (konto + varukorg) -->
+            <div
+                class="d-flex align-items-center gap-2 navbar-actions mobile-icons"
+            >
+                <!-- 1.2 Kontomeny -->
+                <div class="dropdown hover-dropdown account-dropdown">
+                    <button
+                        class="btn account-trigger"
+                        type="button"
+                        id="accountDropdown"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        aria-label="Mitt konto"
+                    >
+                        <i class="bi bi-person"></i>
+                    </button>
+
+                    <div
+                        class="dropdown-menu account-menu"
+                        aria-labelledby="accountDropdown"
+                    >
+                        <div class="account-menu-inner">
+                            <!-- Inloggning -->
+                            <a
+                                href="/Frontend/pages/login.html"
+                                class="account-login-btn"
+                            >
+                                Logga in
+                            </a>
+
+                            <!-- Registrering -->
+                            <div class="account-register-row">
+                                <a
+                                    href="/Frontend/pages/register.html"
+                                    class="account-register-link"
+                                >
+                                    Registrera
+                                </a>
+                            </div>
+
+                            <hr />
+
+                            <!-- Länkar till konto-sidor -->
+                            <div class="account-guest-links">
+                                <a
+                                    class="dropdown-item"
+                                    href="/Frontend/pages/mina-bestallningar.html"
+                                >
+                                    Mina beställningar
+                                </a>
+
+                                <a
+                                    class="dropdown-item"
+                                    href="/Frontend/pages/mina-recesioner.html"
+                                >
+                                    Mina recensioner
+                                </a>
+
+                                <a
+                                    class="dropdown-item"
+                                    href="/Frontend/pages/contact-about-us.html"
+                                >
+                                    Hjälp & kontakt
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 1.3 Varukorg -->
+                <div class="dropdown hover-dropdown cart-wrapper">
+                    <button
+                        class="btn cart-trigger position-relative"
+                        type="button"
+                        id="cartDropdown"
+                        data-bs-toggle="dropdown"
+                        data-bs-auto-close="outside"
+                        aria-expanded="false"
+                        aria-label="Varukorg"
+                    >
+                        <i class="bi bi-cart3"></i>
+
+                        <!-- Antal produkter -->
+                        <span
+                            class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-black cart-btn-badge"
+                        >
+                            2
+                        </span>
+                    </button>
+
+                    <div
+                        class="dropdown-menu cart-dropdown"
+                        aria-labelledby="cartDropdown"
+                    >
+                        <div class="cart-menu-inner">
+                            <!-- Produkter i varukorgen -->
+                            <div id="cartItems">
+                                <!-- Produkt -->
+                                <div
+                                    class="cart-item d-flex align-items-start gap-3 mb-3"
+                                    data-price="899"
+                                >
+                                    <img
+                                        src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=300&q=80"
+                                        alt="Sneakers"
+                                        class="cart-item-img"
+                                    />
+
+                                    <div class="flex-grow-1">
+                                        <div class="fw-semibold">
+                                            Sneakers Run X
+                                        </div>
+
+                                        <div class="small">899 kr</div>
+
+                                        <!-- Kvantitetskontroller -->
+                                        <div class="cart-controls mt-2">
+                                            <button class="qty-btn minus">
+                                                −
+                                            </button>
+                                            <span class="qty-value">1</span>
+                                            <button class="qty-btn plus">
+                                                +
+                                            </button>
+                                            <button class="remove-btn">
+                                                Ta bort
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Produkt -->
+                                <div
+                                    class="cart-item d-flex align-items-start gap-3 mb-3"
+                                    data-price="1299"
+                                >
+                                    <img
+                                        src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=300&q=80"
+                                        alt="Jacka"
+                                        class="cart-item-img"
+                                    />
+
+                                    <div class="flex-grow-1">
+                                        <div class="fw-semibold">
+                                            Urban Jacket
+                                        </div>
+
+                                        <div class="small">1299 kr</div>
+
+                                        <div class="cart-controls mt-2">
+                                            <button class="qty-btn minus">
+                                                −
+                                            </button>
+                                            <span class="qty-value">1</span>
+                                            <button class="qty-btn plus">
+                                                +
+                                            </button>
+                                            <button class="remove-btn">
+                                                Ta bort
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr />
+
+                            <!-- Totalsumma -->
+                            <div class="d-flex justify-content-between mb-3">
+                                <span class="fw-semibold">Summa</span>
+                                <span class="fw-bold" id="cartTotal">
+                                    2198 kr
+                                </span>
+                            </div>
+
+                            <!-- Länk till kassan -->
+                            <div class="d-grid gap-2">
+                                <a
+                                    href="/Frontend/pages/cart.html"
+                                    class="btn btn-outline-secondary"
+                                >
+                                    Kassan
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 1.4 Huvudmeny -->
+            <div class="collapse navbar-collapse" id="mainNavbar">
+                <ul class="navbar-nav ms-lg-5 gap-lg-2 mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/Frontend/">Hem</a>
+                    </li>
+
+                    <!-- Produktmeny -->
+                    <li class="nav-item dropdown position-static">
+                        <a
+                            class="nav-link dropdown-toggle"
+                            href="#"
+                            id="productsDropdown"
+                            role="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                        >
+                            Produkter
+                        </a>
+
+                        <!-- Mega menu -->
+                        <div
+                            class="dropdown-menu mega-menu w-100 mt-0 border-0"
+                            aria-labelledby="productsDropdown"
+                        >
+                            <!-- produktkort -->
+                            ...
+                        </div>
+                    </li>
+
+                    <li class="nav-item">
+                        <a
+                            class="nav-link"
+                            href="/Frontend/pages/contact-about-us.html"
+                        >
+                            Om oss
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a
+                            class="nav-link"
+                            href="/Frontend/pages/contact-about-us.html"
+                        >
+                            Kontakt
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>

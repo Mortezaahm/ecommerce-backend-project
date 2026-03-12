@@ -2,23 +2,23 @@
 HTML-kommentar: Strukturöversikt
 1. Head innehåller metadata och länkade stilmallar
 2. Body innehåller sidans huvudstruktur
-   2.1 Header där navigation laddas in via JavaScript
+   2.1 Header där navigation laddas in
    2.2 Main där sidans innehåll visas
-   2.3 Footer där sidfoten laddas in via JavaScript
+   2.3 Footer där sidfoten laddas in
 3. Script-sektion för externa bibliotek och egna JavaScript-filer
 -->
 
 <!doctype html>
 <html lang="sv">
     <head>
-        <!-- 1. Head innehåller metadata och stilmallar -->
+        <!-- Metadata och sidtitel -->
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-        <title>Juice&Co</title>
+        <title>Juice&Co - Register</title>
 
         <!-- Lokal CSS -->
-        <link rel="stylesheet" href="./assets/css/nav-footer.css" />
+        <link rel="stylesheet" href="../assets/css/nav-footer.css" />
 
         <!-- Bootstrap och ikoner -->
         <link
@@ -32,26 +32,23 @@ HTML-kommentar: Strukturöversikt
     </head>
 
     <body>
-        <!-- 2.1 Header där navigation laddas in -->
+        <!-- Header där navbaren laddas in -->
         <header>
             <div id="header"></div>
         </header>
 
-        <!-- 2.2 Main där sidans innehåll visas -->
+        <!-- Huvudinnehåll för sidan -->
         <main></main>
 
-        <!-- 2.3 Footer där sidfoten laddas in -->
+        <!-- Footer laddas in här -->
         <footer>
             <div id="footer"></div>
         </footer>
 
-        <!-- 3. Script-sektion -->
-        <!-- Bootstrap -->
+        <!-- Script -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-        <!-- Egna script -->
-        <script src="assets/js/components.js"></script>
-        <script src="assets/js/navbar.js"></script>
-        <script src="assets/js/cart.js"></script>
+        <script src="../assets/js/components.js"></script>
+        <script src="../assets/js/navbar.js"></script>
+        <script src="../assets/js/cart.js"></script>
     </body>
 </html>
