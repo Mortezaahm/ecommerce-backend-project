@@ -8,6 +8,8 @@ import {
   loginController
 } from "../controllers/auth.controllers";
 
+import { authMiddleware } from "../middlewares/auth.middleware";
+
 const router = express.Router();
 
 // register
@@ -17,9 +19,9 @@ router.post("/register", registerController);
 router.post("/login", loginController);
 
 // get current user
-router.get("/me", (req, res) => {
+router.get("/me", authMiddleware , (req, res) => {
   res.json({
-    message: "Get current user"
+    user: req.user
   });
 });
 
