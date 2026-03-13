@@ -24,7 +24,7 @@ export const authMiddleware = async (req: AuthRequest, res: Response, next: Next
         })
     }
 
-    const token = authHeader.split(" ")[1];
+    const token = authHeader.includes("Bearer ") ? authHeader.split(" ")[1] : authHeader;
 
     if (!token) {
         return res.status(401).json({
