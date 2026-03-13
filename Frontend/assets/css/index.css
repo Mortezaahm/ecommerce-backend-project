@@ -1,0 +1,67 @@
+/*
+Hero-sektion
+1. Hero wrapper
+2. Hero layout
+3. Textinnehåll
+4. Bild och glow-effekt
+*/
+
+/* 1. Hero wrapper */
+.hero {
+    position: relative;
+    padding: 10rem 0;
+    overflow: hidden;
+    background: linear-gradient(135deg, #fff6f2 0%, #ffe6e0 50%, #ffd5cc 100%);
+}
+
+/* 3. Text */
+.hero-content {
+    max-width: 32rem;
+}
+
+.hero-title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.hero-text {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 1.5rem;
+}
+
+.hero-btn {
+    padding: 0.8rem 1.6rem;
+}
+
+/* 4. Bildsektion */
+.hero-image {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+/* juiceflaskan */
+.hero-image img {
+    width: 53rem;
+}
+
+@media (max-width: 992px) {
+    .hero-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-direction: column;
+        text-align: center;
+        height: 5rem;
+    }
+
+    .hero-title {
+        font-size: 2rem;
+    }
+
+    .hero-image img {
+        width: 16rem;
+    }
+}

@@ -1,24 +1,26 @@
 <!--
 HTML-kommentar: Strukturöversikt
-1. Head innehåller metadata och länkade stilmallar
-2. Body innehåller sidans huvudstruktur
-   2.1 Header där navigation laddas in via JavaScript
-   2.2 Main där sidans innehåll visas
-   2.3 Footer där sidfoten laddas in via JavaScript
-3. Script-sektion för externa bibliotek och egna JavaScript-filer
+1. Head
+2. Body
+   2.1 Header
+   2.2 Main
+       2.2.1 Hero-sektion
+   2.3 Footer
+3. Script-sektion
 -->
 
 <!doctype html>
 <html lang="sv">
     <head>
-        <!-- 1. Head innehåller metadata och stilmallar -->
+        <!-- 1. Head -->
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
         <title>Juice&Co</title>
 
         <!-- Lokal CSS -->
-        <link rel="stylesheet" href="./assets/css/nav-footer.css" />
+        <link rel="stylesheet" href="assets/css/nav-footer.css" />
+        <link rel="stylesheet" href="assets/css/index.css" />
 
         <!-- Bootstrap och ikoner -->
         <link
@@ -32,15 +34,45 @@ HTML-kommentar: Strukturöversikt
     </head>
 
     <body>
-        <!-- 2.1 Header där navigation laddas in -->
+        <!-- 2.1 Header -->
         <header>
             <div id="header"></div>
         </header>
 
-        <!-- 2.2 Main där sidans innehåll visas -->
-        <main></main>
+        <!-- 2.2 Main -->
+        <main>
+            <!-- 2.2.1 Hero-sektion -->
+            <section class="hero">
+                <div class="container hero-container">
+                    <!-- Textinnehåll -->
+                    <div class="hero-content">
+                        <h1 class="hero-title">
+                            Fresh Juice<br />
+                            Made for Energy
+                        </h1>
 
-        <!-- 2.3 Footer där sidfoten laddas in -->
+                        <p class="hero-text">
+                            Naturliga ingredienser, full av smak och energi.
+                            Perfekt start på dagen eller efter träningen.
+                        </p>
+
+                        <a
+                            href="/Frontend/pages/products.html"
+                            class="btn btn-shop-primary hero-btn"
+                        >
+                            Shop now
+                        </a>
+                    </div>
+
+                    <!-- Bild -->
+                    <div class="hero-image">
+                        <img src="assets/media/hero.png" alt="Juice bottle" />
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- 2.3 Footer -->
         <footer>
             <div id="footer"></div>
         </footer>
