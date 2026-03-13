@@ -348,10 +348,21 @@ html {
 
 /* 5. Produktmeny-sektion innehåller mega menu och produktkort */
 
-.shop-navbar .mega-menu {
-    border-radius: 0 !important;
+.shop-navbar .nav-item.dropdown {
+    position: relative;
 }
-.mega-menu {
+
+/* Osynlig hover-zon mellan länken och mega-menyn */
+.shop-navbar .nav-item.dropdown::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 100%;
+    width: 100%;
+    height: 0.75rem;
+}
+
+.shop-navbar .mega-menu {
     display: none;
     position: absolute;
     top: 100%;
