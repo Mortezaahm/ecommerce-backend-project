@@ -1,0 +1,71 @@
+/*
+CSS-kommentar: Strukturöversikt
+1. Banner-sektion
+   1.1 Container
+   1.2 Bild
+   1.3 Overlay
+   1.4 Titel
+2. Responsiv sektion
+*/
+
+/* 1. Banner-sektion */
+
+/* 1.1 Container */
+#banner-container {
+    width: 100%;
+    height: 70vh;
+    overflow: hidden;
+    position: relative;
+}
+
+/* 1.2 Banner-bild */
+#banner-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* 1.3 Mörk overlay ovanpå bilden */
+#banner-container::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(0.15rem);
+}
+
+/* 1.4 Titel  */
+.title {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+}
+
+.title h1 {
+    margin: 0;
+    color: #f5f7f4;
+    font-size: 6rem;
+    text-align: center;
+    text-shadow: 0 0.25rem 1.25rem rgba(0, 0, 0, 0.5);
+}
+
+/* 2. Mobilanpassning */
+@media (max-width: 991.98px) {
+    /* Mindre banner på mobil */
+    #banner-container {
+        height: 50vh;
+    }
+
+    /* Mindre titel */
+    .title h1 {
+        font-size: 3rem;
+    }
+
+    /* Lite svagare blur */
+    #banner-container::after {
+        backdrop-filter: blur(0.09rem);
+    }
+}
