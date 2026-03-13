@@ -8,12 +8,14 @@
 
 import type { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import { findUserById } from "../models/mysql/user.model";
+import type { AuthRequest } from "../types/types";
 
 interface JwtPayload {
     id: number;
 }
 
-export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
+export const authMiddleware = async (req: AuthRequest, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;
 
     if (!authHeader) {
@@ -22,11 +24,7 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
         })
     }
 
-    const token = authHeader.split(" ")[0];
-
-    console.log("HEADER:", req.headers.authorization);
-    console.log("TOKEN:", token);
-    console.log("SPLIT:", authHeader.split(" "));
+    const token = authHeader.split(" ")[1];
 
     if (!token) {
         return res.status(401).json({
@@ -38,13 +36,23 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
         const decoded = jwt.verify(
             token,
             process.env.JWT_SECRET!
-        ) as unknown as JwtPayload;
-        req.user = {
-            id:decoded.id,
-            name: "",
-            email:""
-        };
+        ) as JwtPayload;
 
+        const user = await findUserById(decoded.id);
+
+        if (!user) {
+            return res.status(401).json({
+                message: "User not found"
+            });
+        }
+
+
+        req.user = {
+            id:user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role
+        };
 
         next();
 
