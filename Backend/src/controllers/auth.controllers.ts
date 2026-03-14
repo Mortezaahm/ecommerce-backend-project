@@ -4,8 +4,34 @@ import type { Request, Response } from "express";
 
 // controllers for authentication - register
 export const registerController = async (req: Request, res: Response) => {
-    const {name, email, password} = req.body;
+    const {name, email, confirmEmail, password, confirmPassword} = req.body;
+
     try {
+        //basic validation
+        if (!name || !email || !password) {
+            return res.status(400). json ({
+                message: "All fields are required"
+            });
+        }
+
+        if (email !== confirmEmail) {
+            return res.status(400). json ({
+                message: "Emails are not match"
+            });
+        }
+
+        if (password !== confirmPassword) {
+            return res.status(400). json ({
+                message: "Passwords do not match"
+            });
+        }
+
+        if (password.length < 6 ) {
+            return res.status(400). json ({
+                message: "Password must be at least 6 characters"
+            });
+        }
+
         const user = await registerUser(name, email, password);
         res.status(201).json(user);
     } catch (error) {
