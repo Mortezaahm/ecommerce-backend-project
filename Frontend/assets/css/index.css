@@ -48,8 +48,19 @@ Hero-sektion
 }
 
 .main-products {
+    padding: 4rem 0;
+}
+
+.main-products h2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 700;
+}
+
+.products-grid {
     max-width: 1600px;
-    margin: 40px auto;
+    margin: 0 auto;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 32px;
@@ -78,16 +89,16 @@ Hero-sektion
     max-width: 520px;
 }
 
-.product-content h2 {
+.product-content h3 {
     margin: 0 0 12px;
-    font-size: 2rem;
+    font-size: 1.5rem;
     line-height: 1;
-    font-weight: 800;
+    font-weight: 750;
 }
 
 .product-content p {
     margin: 0 0 24px;
-    font-size: 1rem;
+    font-size: 0.9rem;
     line-height: 1.5;
 }
 
@@ -172,7 +183,7 @@ Hero-sektion
         width: 16rem;
     }
 
-    .main-products {
+    .products-grid {
         grid-template-columns: 1fr;
     }
 
@@ -192,20 +203,7 @@ Hero-sektion
         position: absolute;
         left: auto;
         bottom: -3rem;
-        right: 10px;
+        right: -10px;
         max-height: 180px;
-    }
-
-    .product-content h2 {
-        font-size: 2.2rem;
-    }
-
-    .product-content p {
-        font-size: 1rem;
-    }
-
-    .products-btn {
-        font-size: 1rem;
-        padding: 14px 20px;
     }
 }
