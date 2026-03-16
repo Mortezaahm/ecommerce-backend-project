@@ -1,12 +1,11 @@
 /*
-Hero-sektion
-1. Hero wrapper
-2. Hero layout
-3. Textinnehåll
-4. Bild och glow-effekt
+CSS-kommentar: Strukturöversikt
+1. Hero-sektion
+2. Produktsektion
 */
 
-/* 1. Hero wrapper */
+/* 1. Hero-sektion */
+
 .hero {
     position: relative;
     padding: 10rem 0;
@@ -14,7 +13,6 @@ Hero-sektion
     background: linear-gradient(135deg, #fff6f2 0%, #ffe6e0 50%, #ffd5cc 100%);
 }
 
-/* 3. Text */
 .hero-content {
     max-width: 32rem;
 }
@@ -35,14 +33,12 @@ Hero-sektion
     padding: 0.8rem 1.6rem;
 }
 
-/* 4. Bildsektion */
 .hero-image {
     position: absolute;
     right: 0;
     top: 0;
 }
 
-/* juiceflaskan */
 .hero-image img {
     width: 53rem;
 }
@@ -116,7 +112,6 @@ Hero-sektion
     opacity: 0.9;
 }
 
-/* Bakgrundsfärger */
 .card-antiox .products-btn {
     background: #b23a48;
 }

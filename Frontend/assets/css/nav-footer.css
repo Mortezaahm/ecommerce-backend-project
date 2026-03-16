@@ -108,7 +108,7 @@ html {
 
 /* 2.3 Styling för menyknapp */
 .shop-navbar .navbar-toggler {
-    border-color: rgba(245, 247, 244, 0.4);
+    border: none;
 }
 
 .shop-navbar .navbar-toggler:focus {
