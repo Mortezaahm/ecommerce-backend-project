@@ -1,62 +1,71 @@
-<!--
-HTML-kommentar: Strukturöversikt
-1. Head innehåller metadata och länkade stilmallar
-2. Body innehåller sidans huvudstruktur
-   2.1 Header där navigation laddas in
-   2.2 Main där sidans innehåll visas
-   2.3 Footer där sidfoten laddas in
-3. Script-sektion för externa bibliotek och egna JavaScript-filer
--->
-
 <!doctype html>
 <html lang="sv">
     <head>
-        <!-- Metadata och sidtitel -->
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="stylesheet" href="../assets/css/register.css" />
+        <link rel="stylesheet" href="../assets/css/auth.css" />
         <title>Juice&Co - Register</title>
     </head>
 
     <body>
-        <!-- Header där navbaren laddas in -->
         <header>
             <div id="header"></div>
         </header>
-        <main>
-            <div class="register-wrapper">
-                <form id="register-form">
-                    <h2>Registrera dig</h2>
 
-                    <input type="text" placeholder="Namn*" required />
-                    <input type="email" placeholder="Email*" required />
+        <main class="auth-page">
+            <div class="auth-wrapper">
+                <form id="register-form" class="auth-form">
+                    <h2 class="auth-title">Registrera dig</h2>
+
                     <input
+                        class="auth-input"
+                        type="text"
+                        placeholder="Namn*"
+                        required
+                    />
+                    <input
+                        class="auth-input"
+                        type="email"
+                        placeholder="Email*"
+                        required
+                    />
+                    <input
+                        class="auth-input"
                         type="email"
                         placeholder="Bekräfta Email*"
                         required
                     />
-                    <input type="password" placeholder="Lösenord*" required />
                     <input
+                        class="auth-input"
+                        type="password"
+                        placeholder="Lösenord*"
+                        required
+                    />
+                    <input
+                        class="auth-input"
                         type="password"
                         placeholder="Bekräfta Lösenord*"
                         required
                     />
 
-                    <button type="submit">Registrera dig</button>
-                    <p>
+                    <button class="auth-button" type="submit">
+                        Registrera dig
+                    </button>
+
+                    <p class="auth-text">
                         Redan medlem?
-                        <a href="../pages/login.html">Logga in!</a>
+                        <a class="auth-link" href="../pages/login.html">
+                            Logga in!
+                        </a>
                     </p>
                 </form>
             </div>
         </main>
 
-        <!-- Footer laddas in här -->
         <footer>
             <div id="footer"></div>
         </footer>
 
-        <!-- Script -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
         <script src="../assets/js/components.js"></script>
         <script src="../assets/js/navbar.js"></script>
