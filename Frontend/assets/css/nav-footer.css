@@ -109,6 +109,8 @@ html {
 /* 2.3 Styling för menyknapp */
 .shop-navbar .navbar-toggler {
     border: none;
+    color: #f5f7f4;
+    font-size: 1.6rem;
 }
 
 .shop-navbar .navbar-toggler:focus {
@@ -154,8 +156,27 @@ html {
     box-shadow: none !important;
     outline: none !important;
     color: var(--brand-text) !important;
-    font-size: 1.5rem;
     line-height: 1;
+}
+
+.account-trigger i,
+.cart-trigger i {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.account-trigger i {
+    font-size: 1.1rem;
+    margin-top: 0.6rem;
+}
+
+.cart-trigger i {
+    font-size: 1rem;
+    margin-top: 0.4rem;
 }
 
 .account-trigger::before,
@@ -170,12 +191,6 @@ html {
         background-color 0s;
     pointer-events: none;
     z-index: 0;
-}
-
-.account-trigger i,
-.cart-trigger i {
-    position: relative;
-    z-index: 1;
 }
 
 /* 4.3 Hover- och aktivt läge */
@@ -470,7 +485,6 @@ main {
     text-underline-offset: 0.25rem;
 }
 
-/* 7.4 Nederdel och skiljelinje */
 .footer-divider {
     border-color: rgba(245, 247, 244, 0.2);
     margin-top: 1.5rem;
@@ -503,16 +517,12 @@ main {
         min-height: 4rem;
     }
 
-    .mobile-nav-wrap {
-        position: relative;
-        justify-content: space-between;
-        flex-wrap: wrap;
+    #logo {
+        margin-top: 5px;
     }
 
-    .shop-navbar .navbar-toggler {
-        order: 1;
-        margin: 0;
-        padding: 0.25rem 0.5rem;
+    .mobile-nav-wrap {
+        position: relative;
     }
 
     .mobile-centered-logo {
@@ -531,8 +541,14 @@ main {
         gap: 0.2rem;
     }
 
-    .navbar-actions {
-        padding-left: 0;
+    .account-trigger i {
+        font-size: 1.2rem;
+        margin-top: 0.5rem;
+    }
+
+    .cart-trigger i {
+        font-size: 1.1rem;
+        margin-top: 0.4rem;
     }
 
     .navbar-collapse {
@@ -545,25 +561,7 @@ main {
         margin-left: 0 !important;
     }
 
-    .account-trigger,
-    .cart-trigger {
-        width: 2.5rem;
-        height: 2.5rem;
-        font-size: 1.25rem;
-    }
-
-    .account-menu,
-    .cart-dropdown {
-        min-width: 17.5rem;
-    }
-
-    .mega-menu {
-        position: static !important;
-        box-shadow: none !important;
-        width: 100% !important;
-    }
-
-    .mega-product-img {
-        height: 10rem;
+    .site-footer {
+        text-align: center;
     }
 }
