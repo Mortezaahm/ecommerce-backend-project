@@ -352,29 +352,18 @@ html {
     position: relative;
 }
 
-/* Osynlig hover-zon mellan länken och mega-menyn */
-.shop-navbar .nav-item.dropdown::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 100%;
-    width: 100%;
-    height: 0.75rem;
-}
-
 .shop-navbar .mega-menu {
     display: none;
     position: absolute;
-    top: 100%;
+    top: 100% -1px;
     left: 0;
-    right: auto;
     width: 22rem;
     min-width: 22rem;
     padding: 0;
-    margin-top: 0 !important;
-    border: 0 !important;
-    border-radius: 0 !important;
-    background-color: var(--brand-bg) !important;
+    margin-top: 0;
+    border: 0;
+    border-radius: 0;
+    background-color: var(--brand-bg);
     z-index: 1050;
 }
 

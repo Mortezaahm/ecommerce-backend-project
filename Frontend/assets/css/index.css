@@ -47,6 +47,113 @@ Hero-sektion
     width: 53rem;
 }
 
+.main-products {
+    max-width: 1600px;
+    margin: 40px auto;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
+}
+
+.product-card {
+    position: relative;
+    min-height: 200px;
+    margin: 1rem;
+    display: flex;
+    align-items: center;
+    padding: 40px 40px 40px 160px;
+    background: #efe9e1;
+}
+
+.product-image {
+    position: absolute;
+    left: -2rem;
+    bottom: -2rem;
+    max-height: 90%;
+    width: auto;
+    object-fit: contain;
+}
+
+.product-content {
+    max-width: 520px;
+}
+
+.product-content h2 {
+    margin: 0 0 12px;
+    font-size: 2rem;
+    line-height: 1;
+    font-weight: 800;
+}
+
+.product-content p {
+    margin: 0 0 24px;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.products-btn {
+    display: inline-block;
+    color: #f5f7f4;
+    text-decoration: none;
+    padding: 10px 20px;
+    font-weight: 700;
+    border-radius: 10px;
+    font-size: 1rem;
+}
+
+.products-btn:hover {
+    opacity: 0.9;
+}
+
+/* Bakgrundsfärger */
+.card-antiox .products-btn {
+    background: #b23a48;
+}
+
+.card-boost .products-btn {
+    background: #f4a300;
+}
+
+.card-carrot .products-btn {
+    background: #f57c00;
+}
+
+.card-cleanse .products-btn {
+    background: #4f8f2e;
+}
+
+.card-ginger .products-btn {
+    background: #e6b84a;
+}
+
+.card-rose .products-btn {
+    background: #e84c6a;
+}
+
+.card-antiox .product-content h2 {
+    color: #b23a48;
+}
+
+.card-boost .product-content h2 {
+    color: #f4a300;
+}
+
+.card-carrot .product-content h2 {
+    color: #f57c00;
+}
+
+.card-cleanse .product-content h2 {
+    color: #4f8f2e;
+}
+
+.card-ginger .product-content h2 {
+    color: #e6b84a;
+}
+
+.card-rose .product-content h2 {
+    color: #e84c6a;
+}
+
 @media (max-width: 992px) {
     .hero-container {
         display: flex;
@@ -63,5 +170,42 @@ Hero-sektion
 
     .hero-image img {
         width: 16rem;
+    }
+
+    .main-products {
+        grid-template-columns: 1fr;
+    }
+
+    .product-card {
+        min-height: 240px;
+        margin: 1rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .product-card {
+        position: relative;
+        padding: 30px;
+    }
+
+    .product-image {
+        position: absolute;
+        left: auto;
+        bottom: -3rem;
+        right: 10px;
+        max-height: 180px;
+    }
+
+    .product-content h2 {
+        font-size: 2.2rem;
+    }
+
+    .product-content p {
+        font-size: 1rem;
+    }
+
+    .products-btn {
+        font-size: 1rem;
+        padding: 14px 20px;
     }
 }
