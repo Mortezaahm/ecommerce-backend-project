@@ -140,30 +140,6 @@ CSS-kommentar: Strukturöversikt
     background: #e84c6a;
 }
 
-.card-antiox .product-content h2 {
-    color: #b23a48;
-}
-
-.card-boost .product-content h2 {
-    color: #f4a300;
-}
-
-.card-carrot .product-content h2 {
-    color: #f57c00;
-}
-
-.card-cleanse .product-content h2 {
-    color: #4f8f2e;
-}
-
-.card-ginger .product-content h2 {
-    color: #e6b84a;
-}
-
-.card-rose .product-content h2 {
-    color: #e84c6a;
-}
-
 @media (max-width: 992px) {
     .hero-container {
         display: flex;

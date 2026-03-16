@@ -273,13 +273,21 @@ html {
     border-radius: 0;
 }
 
+.logout {
+    display: flex;
+    justify-content: end;
+    color: #111;
+    font-weight: 700;
+    text-decoration: none;
+}
+
 .account-login-btn:hover {
     opacity: 0.8;
 }
 
 .account-register-row {
     display: flex;
-    align-items: center;
+    justify-content: end;
     gap: 0.625rem;
     font-size: 0.9375rem;
     margin-bottom: 1.125rem;
@@ -293,6 +301,10 @@ html {
 }
 
 .account-register-link:hover {
+    text-decoration: underline;
+}
+
+.logout:hover {
     text-decoration: underline;
 }
 
