@@ -1,5 +1,5 @@
 // logic for authentication and authorization
-import { createUser, findUserByEmail } from "../models/mysql/user.model";
+import { createUser, findUserByEmail, type CreateUserInput } from "../models/mysql/user.model";
 import { hashPassword, comparePassword} from "../utils/hashPassword";
 import { generateToken } from "../utils/generateToken";
 import type { RegisterInput, LoginInput } from "../validations/auth.validation";
@@ -20,11 +20,13 @@ export const registerUser = async (data: CleanRegisterInput) => {
     //hash password
     const hashedPassword = await hashPassword(password);
 
-    const userData:any = {
+    const userData: CreateUserInput = {
         name,
         email,
         password: hashedPassword,
-        role: "user"
+        role: "user",
+        address: address ?? null,
+        phone: phone ?? null
     };
 
     // check optional fields
