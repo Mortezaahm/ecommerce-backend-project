@@ -9,10 +9,19 @@ export const registerSchema = z.object({
     address: z.string().optional(),
     phone: z.string().optional(),
 })
+// varje refine kollar bara en kondition, så vi behöver två för att kolla både email och password matchning
+// check email
  .refine ((data)=> data.email === data.confirmEmail, {
-    message: "Password do not match",
-    path: ["confirmPassword"],
- });
+    message: "Emails do not match",
+    path: ["confirmEmail"],
+ })
+
+ // check password
+    .refine ((data)=> data.password === data.confirmPassword, {
+        message: "Passwords do not match",
+        path: ["confirmPassword"],
+    });
+
 
  export const loginSchema = z.object({
     email: z.email("Invalid email"),
