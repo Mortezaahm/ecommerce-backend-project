@@ -1,6 +1,9 @@
 // user model mysql
 import pool from "../../config/mysql";
 import type { ResultSetHeader, RowDataPacket } from "mysql2";
+
+// Define correct types for CRUD functions
+// 1) Interface for full data from DB - Type for DB
 export interface DBUser extends RowDataPacket {
     id: number,
     name: string,
@@ -11,7 +14,7 @@ export interface DBUser extends RowDataPacket {
     role: "user" | "admin"
 }
 
-// Separate type for just Creating User Input and omit "any" in whole code
+// 2) Separate type for just Creating User Input and delete "any" - Type for Create
 export type CreateUserInput = {
   name: string,
   email: string,
@@ -21,7 +24,24 @@ export type CreateUserInput = {
   role: "user" | "admin"
 }
 
-// insert into database users in mysql
+// 3) define a type for just find user by id and delete "any" in function - Type for get by id
+export interface SafeUser extends RowDataPacket {
+  id: number,
+  name: string,
+  email: string,
+  role: "user" | "admin"
+}
+
+// 4) define a type for update
+export interface UpdateUserInput {
+  name: string,
+  email: string,
+  role: "user" | "admin"
+}
+
+
+// CRUD => Create , GET + GET by ID, Update , and DELETE
+// 1) insert into database users in mysql Create USER
 export const createUser = async (user: CreateUserInput) => {
   const { name, email, password, address, phone, role } = user;
 
@@ -36,7 +56,7 @@ export const createUser = async (user: CreateUserInput) => {
   return result.insertId;
 };
 
-// find user by email
+// 2) Get = find user by email
 export const findUserByEmail = async (email: string) => {
   const [rows] = await pool.execute<DBUser[]>(
     `
@@ -49,9 +69,9 @@ export const findUserByEmail = async (email: string) => {
   return rows[0];
 };
 
-// find user by id
-export const findUserById = async (id: number) => {
-  const [rows]: any = await pool.execute(
+// 3) Get by ID = find user by id
+export const findUserById = async (id: number):Promise<SafeUser | undefined> => {
+  const [rows] = await pool.execute<SafeUser[]>(
     `
     SELECT id, name, email, role
     FROM users
@@ -62,3 +82,29 @@ export const findUserById = async (id: number) => {
 
   return rows[0];
 };
+
+// 4) Update User
+export const updateUser = async (id:number, user:UpdateUserInput): Promise<boolean> => {
+  const { name, email, role } = user;
+
+  const [result] = await pool.execute<ResultSetHeader>(
+    `
+    UPDATE users
+    SET name = ?, email = ?, role = ?
+    WHERE id = ?
+    `,
+    [name, email, role, id]
+  );
+  return result.affectedRows > 0;
+}
+
+// 5) Delete User
+export const deleteUser = async (id:number):Promise<boolean> => {
+  const [result] = await pool.execute<ResultSetHeader>(
+    `
+    DELETE FROM users WHERE id = ?
+    ` ,
+    [id]
+  );
+  return result.affectedRows > 0;
+}
