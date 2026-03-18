@@ -1,10 +1,9 @@
+const productDetail = document.getElementById('productDetail')
 const backButton = document.getElementById('backButton')
 
 backButton.addEventListener('click', () => {
     window.location.href = './products.html'
 })
-
-const productDetail = document.getElementById('productDetail')
 
 function getProductIdFromUrl() {
     const params = new URLSearchParams(window.location.search)
@@ -34,15 +33,15 @@ async function loadSingleProduct() {
 
 function renderProduct(product) {
     productDetail.innerHTML = `
-
-
         <div class="product-detail-card">
             <div class="product-detail-image">
                 <img src="${product.image}" alt="${product.title}">
             </div>
 
             <div class="product-detail-info">
-                <div class="rating">⭐ ${product.rating?.rate ?? 0} (${product.rating?.count ?? 0} recensioner)</div>
+                <div class="rating">
+                    ⭐ ${product.rating?.rate ?? 0} (${product.rating?.count ?? 0} recensioner)
+                </div>
                 <h1>${product.title}</h1>
                 <p class="category">Kategori: ${product.category}</p>
                 <p class="description">${product.description}</p>
@@ -55,7 +54,9 @@ function renderProduct(product) {
                         <button id="increaseQty">+</button>
                     </div>
 
-                    <button id="addToCartBtn" class="add-to-cart-btn">Lägg i kundvagn</button>
+                    <button id="addToCartBtn" class="add-to-cart-btn">
+                        Lägg i kundvagn
+                    </button>
                 </div>
             </div>
         </div>
@@ -65,21 +66,12 @@ function renderProduct(product) {
 }
 
 function setupProductActions(product) {
-    const backButton = document.getElementById('backButton')
     const decreaseBtn = document.getElementById('decreaseQty')
     const increaseBtn = document.getElementById('increaseQty')
     const quantityEl = document.getElementById('quantity')
     const addToCartBtn = document.getElementById('addToCartBtn')
 
     let quantity = 1
-
-    backButton.addEventListener('click', () => {
-        if (document.referrer) {
-            window.history.back()
-        } else {
-            window.location.href = './products.html'
-        }
-    })
 
     decreaseBtn.addEventListener('click', () => {
         if (quantity > 1) {
@@ -94,29 +86,21 @@ function setupProductActions(product) {
     })
 
     addToCartBtn.addEventListener('click', () => {
-        const cartItem = {
-            id: product.id,
-            title: product.title,
-            price: product.price,
-            image: product.image,
-            quantity: quantity
-        }
-
-        const existingCart = JSON.parse(localStorage.getItem('cart')) || []
-
-        const existingProduct = existingCart.find(
-            (item) => item.id === cartItem.id
-        )
-
-        if (existingProduct) {
-            existingProduct.quantity += quantity
-        } else {
-            existingCart.push(cartItem)
-        }
-
-        localStorage.setItem('cart', JSON.stringify(existingCart))
-        alert('Produkten lades till i kundvagnen')
+        addToCart(product, quantity)
+        showCartToast()
     })
 }
 
 loadSingleProduct()
+
+function showCartToast(message = 'Produkten lades till i kundvagnen') {
+    const toast = document.getElementById('cartToast')
+    if (!toast) return
+
+    toast.textContent = message
+    toast.classList.add('show')
+
+    setTimeout(() => {
+        toast.classList.remove('show')
+    }, 2500)
+}
