@@ -40,3 +40,41 @@ export const getOrdersByUserId = async (user_id: number): Promise<Order[]> => {
 
   return rows as Order[];
 };
+
+// update order
+export const updateOrder = async (
+  id: number,
+  order: Partial<Order>
+): Promise<boolean> => {
+  let query = "UPDATE Orders SET ";
+  const params: (string | number)[] = [];
+
+  if (order.user_id !== undefined) {
+    query += "user_id = ?, ";
+    params.push(order.user_id);
+  }
+
+  if (order.total_price !== undefined) {
+    query += "total_price = ?, ";
+    params.push(order.total_price);
+  }
+
+  // ta bort sista kommatecknet
+  query = query.slice(0, -2);
+
+  query += " WHERE order_id = ?";
+  params.push(id);
+
+  const [result]: any = await pool.execute(query, params);
+  return result.affectedRows > 0;
+};
+
+// delete order
+export const deleteOrder = async (id: number): Promise<boolean> => {
+  const [result]: any = await pool.execute(
+    "DELETE FROM Orders WHERE order_id = ?",
+    [id]
+  );
+
+  return result.affectedRows > 0;
+};
