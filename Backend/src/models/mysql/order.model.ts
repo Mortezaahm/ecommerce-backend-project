@@ -21,4 +21,22 @@ export const createOrder = async (order: Order): Promise<number> => {
   return result.insertId;
 };
 
+// get order by id
+export const getOrderById = async (id: number): Promise<Order | null> => {
+  const [rows]: any = await pool.execute(
+    "SELECT * FROM Orders WHERE order_id = ?",
+    [id]
+  );
 
+  return (rows as Order[])[0] || null;
+};
+
+// get all orders for a user
+export const getOrdersByUserId = async (user_id: number): Promise<Order[]> => {
+  const [rows]: any = await pool.execute(
+    "SELECT * FROM Orders WHERE user_id = ?",
+    [user_id]
+  );
+
+  return rows as Order[];
+};
