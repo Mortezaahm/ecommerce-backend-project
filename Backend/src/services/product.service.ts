@@ -1,1 +1,50 @@
 // logic for product management, including CRUD operations and business logic related to products
+import {
+  getProductById,
+  getProductByFilter,
+  createProduct,
+  updateProduct,
+  deleteProduct
+} from "../models/mysql/product.model";
+import type { Product } from "../models/mysql/product.model";
+
+export const getProductsByFilterService = async (
+    categoryId?: number,
+    minPrice?: number,
+    maxPrice?: number
+): Promise<Product[]> => {
+    if (minPrice !== undefined && maxPrice !== undefined) {
+    if (minPrice > maxPrice) {
+      throw new Error("minPrice cannot be greater than maxPrice");
+    }
+  }
+
+  return await getProductByFilter(categoryId, minPrice, maxPrice);
+}
+
+export const getProductByIdService = async (id: number): Promise<Product | null> => {
+    return await getProductById(id);
+}
+
+export const createProductService = async (product: Product): Promise<number> => {
+    if (product.price < 0) {
+    throw new Error("Price cannot be negative");
+  }
+  return await createProduct(product);
+}
+
+export const updateProductService = async (
+    id: number,
+    product: Partial<Product>
+): Promise<boolean> => {
+
+    if (product.price !== undefined && product.price < 0) {
+        throw new Error("Price cannot be negative");
+    }
+
+    return await updateProduct(id,product);
+}
+
+export const deleteProductService = async (id: number): Promise<boolean> => {
+    return await deleteProduct(id);
+}
