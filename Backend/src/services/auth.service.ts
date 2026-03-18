@@ -14,7 +14,7 @@ import type { RegisterInput, LoginInput } from "../validations/auth.validation";
 // create a type for register input without confirm email and confirm password
 type CleanRegisterInput = Omit<RegisterInput, "confirmEmail" | "confirmPassword">;
 
-// create a type for update user
+// create a type for update user -- ADMIN ONLY
 type UpdateUserInput = {
     name?: string,
     email?: string,
