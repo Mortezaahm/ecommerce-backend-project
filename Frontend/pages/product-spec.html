@@ -14,9 +14,8 @@ HTML-kommentar: Strukturöversikt
         <!-- Metadata och sidtitel -->
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+        <link rel="stylesheet" href="../assets/css/product-spec.css" />
         <title>Juice&Co - Product Spec</title>
-
     </head>
 
     <body>
@@ -26,7 +25,14 @@ HTML-kommentar: Strukturöversikt
         </header>
 
         <!-- Huvudinnehåll för sidan -->
-        <main></main>
+        <main>
+            <button id="backButton" class="back-btn">
+                ← Tillbaka till produkter
+            </button>
+            <div id="productDetail" class="product-detail">
+                <p>Laddar produkt...</p>
+            </div>
+        </main>
 
         <!-- Footer laddas in här -->
         <footer>
@@ -38,5 +44,6 @@ HTML-kommentar: Strukturöversikt
         <script src="../assets/js/components.js"></script>
         <script src="../assets/js/navbar.js"></script>
         <script src="../assets/js/cart.js"></script>
+        <script src="../assets/js/product-spec.js"></script>
     </body>
 </html>
