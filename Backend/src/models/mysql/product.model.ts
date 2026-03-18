@@ -65,3 +65,54 @@ export const createProduct = async (product: Product) => {
 
   return result.insertId;
 };
+
+// update product
+
+export const updateProduct = async (
+    id: number,
+    product: Partial<Product>
+): Promise<boolean> => {
+    let query = "UPDATE products SET ";
+    const params:( string | number | null )[] = [];
+
+    if (product.title !== undefined) {
+        query += "title = ?, ";
+        params.push(product.title);
+    }
+
+    if (product.info !== undefined) {
+        query += "info = ?, ";
+        params.push(product.info);
+    }
+
+    if (product.price !== undefined) {
+        query += "price = ?, ";
+        params.push(product.price);
+    }
+
+    if (product.category_id !== undefined) {
+        query += "category_id = ?, ";
+        params.push(product.category_id);
+    }
+
+    // delete the last comma
+    query = query.slice(0,-2);
+
+    query += " WHERE product_id = ?";
+    params.push(id);
+
+    const [result]: any = await pool.execute(query, params);
+
+    return result.affectedRows > 0;
+
+}
+
+// delete product
+export const deleteProduct = async (id:number): Promise<boolean> => {
+    const [result]: any = await pool.execute(
+        "DELETE FROM products WHERE product_id = ?",
+        [id]
+    );
+
+    return result.affectedRows > 0;
+}
