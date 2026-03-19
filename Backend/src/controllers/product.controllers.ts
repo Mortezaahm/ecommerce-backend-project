@@ -7,14 +7,28 @@ import {
   deleteProductService
 } from "../services/product.service";
 
+// a function to parse number
+const parseNumber = (value: unknown): number | undefined => {
+  if (value === undefined) return undefined;
+  const num = Number(value);
+  return isNaN(num) ? undefined : num;
+};
+
+// a function to parse boolean
+const parseBoolean = (value: unknown): boolean | undefined => {
+  if (value === undefined) return undefined;
+  return value === "true" || value === "1" || value === 1;
+};
+
 // GET /products (with filter)
 export const getProductsByFilterController = async (req: Request, res: Response) => {
   try {
-    const { category_id, minPrice, maxPrice } = req.query;
+    const { category_id, minPrice, maxPrice, in_stock } = req.query;
     const products = await getProductsByFilterService (
-      category_id ? Number(category_id) : undefined,
-      minPrice ? Number(minPrice) : undefined,
-      maxPrice ? Number(maxPrice) : undefined
+      parseNumber(category_id),
+      parseNumber(minPrice),
+      parseNumber(maxPrice),
+      parseBoolean(in_stock)
     );
     return res.status(200).json(products)
   } catch (error) {
@@ -55,15 +69,22 @@ export const getProductByIdController = async (req: Request, res: Response) => {
 // create product ==> /products
 export const createProductController = async (req: Request, res: Response) => {
   try {
-    const {title, info, price, category_id} = req.body;
-    if (!title || price) {
+    const {title, info, price, category_id, in_stock} = req.body;
+    if (!title || price === undefined) {
       return res.status(400).json({
         message: "Title and price are required"
       })
     }
 
+    // validate in_stock if provided
+    if (in_stock !== undefined && typeof in_stock !== "boolean") {
+      return res.status(400).json({
+        message: "in_stock must be a boolean value"
+      })
+    }
+
     const newProductId = await createProductService ({
-      title, info, price, category_id
+      title, info, price, category_id, in_stock
     });
 
     return res.status(201).json({

@@ -4,26 +4,34 @@ import {
   getProductByFilter,
   createProduct,
   updateProduct,
-  deleteProduct
+  deleteProduct,
+  getProductByIdWithCategory,
+  getProductsWithCategoryAndFilter
 } from "../models/mysql/product.model";
 import type { Product } from "../models/mysql/product.model";
 
 export const getProductsByFilterService = async (
     categoryId?: number,
     minPrice?: number,
-    maxPrice?: number
-): Promise<Product[]> => {
+    maxPrice?: number,
+    inStock?: boolean
+) => {
     if (minPrice !== undefined && maxPrice !== undefined) {
-    if (minPrice > maxPrice) {
-      throw new Error("minPrice cannot be greater than maxPrice");
-    }
+        if (minPrice > maxPrice) {
+            throw new Error("minPrice cannot be greater than maxPrice");
+        }
   }
 
-  return await getProductByFilter(categoryId, minPrice, maxPrice);
+  return await getProductsWithCategoryAndFilter(categoryId, minPrice, maxPrice, inStock);
 }
 
 export const getProductByIdService = async (id: number): Promise<Product | null> => {
-    return await getProductById(id);
+    if (!id || id <= 0) {
+        throw new Error ("Invalid product id");
+    }
+
+    const product = await getProductByIdWithCategory(id);
+    return product;
 }
 
 export const createProductService = async (product: Product): Promise<number> => {
