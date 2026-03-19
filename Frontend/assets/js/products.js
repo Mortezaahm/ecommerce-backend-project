@@ -130,13 +130,35 @@ function renderProducts(products) {
         div.innerHTML = `
             <img src="${product.image}" alt="${product.title}">
             <div class="product-content">
-                <div class="rating">⭐ ${product.rating?.rate ?? 0} (${product.rating?.count ?? 0} recensioner)</div>
+                <div class="rating">
+                    ⭐ ${product.rating?.rate ?? 0} (${product.rating?.count ?? 0} recensioner)
+                </div>
+
                 <h2>${product.title}</h2>
                 <p>${product.description}</p>
-                <div class="price">${product.price} kr</div>
+
+                <div class="product-bottom">
+                    <div class="price">${product.price.toFixed(2)} kr</div>
+
+                    <button
+                        class="add-to-cart-mini"
+                        data-id="${product.id}"
+                        aria-label="Lägg till ${product.title} i kundvagnen"
+                        type="button"
+                    >
+                        <i class="bi bi-cart-plus"></i>
+                    </button>
+                </div>
             </div>
         `
 
+        const addToCartButton = div.querySelector('.add-to-cart-mini')
+
+        addToCartButton.addEventListener('click', (event) => {
+            event.stopPropagation()
+            addToCart(product, 1)
+            showCartToast(`${product.title} lades till i kundvagnen`)
+        })
         productsContainer.appendChild(div)
     })
 }

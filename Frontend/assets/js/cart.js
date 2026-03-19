@@ -36,6 +36,7 @@ function addToCart(product, quantity = 1) {
 
     saveCart(cart)
     refreshCartUI()
+    showCartToast(`${product.title} lades till i kundvagnen`)
 }
 
 function removeFromCart(productId) {
@@ -211,3 +212,15 @@ function initCart() {
 
 document.addEventListener('DOMContentLoaded', initCart)
 document.addEventListener('componentsLoaded', initCart)
+
+function showCartToast(message = 'Produkten lades till i kundvagnen') {
+    const toast = document.getElementById('cartToast')
+    if (!toast) return
+
+    toast.textContent = message
+    toast.classList.add('show')
+
+    setTimeout(() => {
+        toast.classList.remove('show')
+    }, 2500)
+}
