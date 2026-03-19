@@ -29,3 +29,4 @@ async function startServer() {
 }
 
 startServer();
+console.log("Server starting...");
