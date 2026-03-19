@@ -1,51 +1,73 @@
-import type { Error } from "mongoose";
-import { registerUser, loginUser } from "../services/auth.service";
+import { registerUser, loginUser, updateUserService, deleteUserService } from "../services/auth.service";
 import type { Request, Response } from "express";
 
 // controllers for authentication - register
 export const registerController = async (req: Request, res: Response) => {
-    const {name, email, confirmEmail, password, confirmPassword} = req.body;
 
     try {
-        //basic validation
-        if (!name || !email || !password) {
-            return res.status(400). json ({
-                message: "All fields are required"
-            });
-        }
-
-        if (email !== confirmEmail) {
-            return res.status(400). json ({
-                message: "Emails are not match"
-            });
-        }
-
-        if (password !== confirmPassword) {
-            return res.status(400). json ({
-                message: "Passwords do not match"
-            });
-        }
-
-        if (password.length < 6 ) {
-            return res.status(400). json ({
-                message: "Password must be at least 6 characters"
-            });
-        }
-
-        const user = await registerUser(name, email, password);
-        res.status(201).json(user);
+        const user = await registerUser(req.body);
+        res.status(201).json({
+            success: true,
+            user
+        });
     } catch (error) {
-        res.status(500).json({message: (error as Error).message});
+        res.status(400).json({message: (error as Error).message});
     }
 }
 
-
+// controllers for authentication - login
 export const loginController = async (req: Request, res: Response) => {
     const {email, password} = req.body;
     try {
-        const data = await loginUser(email, password);
-        res.status(200).json({data});
+        const data = await loginUser(req.body);
+        res.status(200).json({
+            success: true,
+            data
+        });
     } catch (error) {
         res.status(401).json({message: (error as Error).message});
+    }
+}
+
+// ========== **************************************** ==========
+// ========== Update Controllers Function - ADMIN ONLY ==========
+// ========== **************************************** ==========
+export const updateUserController = async (req: Request, res:Response) => {
+    const id = Number(req.params.id);
+
+    if (isNaN(id)) {
+        return res.status(400).json({message: "Invalid user id"})
+    }
+
+    try {
+        const result = await updateUserService(id, req.body);
+        res.status(200).json({
+            success: true,
+            message: result.message
+        })
+    } catch (error) {
+        res.status(400).json({
+            message: (error as Error).message
+        })
+    }
+}
+
+// ========== **************************************** ==========
+// ========== Delete Controllers Function - ADMIN ONLY ==========
+// ========== **************************************** ==========
+
+export const deleteUserController = async (req:Request, res:Response) => {
+    const id = Number(req.params.id);
+
+    try {
+        const result = await deleteUserService(id);
+        res.status(200).json({
+            success: true,
+            message: result.message
+        })
+    } catch (error) {
+        res.status(400).json({
+            message: (error as Error).message
+        })
     }
 }
