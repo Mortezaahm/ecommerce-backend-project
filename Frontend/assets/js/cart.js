@@ -1,15 +1,3 @@
-/*
-JavaScript-kommentar: Strukturöversikt
-1. Hämtar och sparar varukorg i localStorage
-2. Räknar antal och totalsumma
-3. Lägger till, tar bort och uppdaterar produkter
-4. Renderar navbarens mini-cart
-5. Renderar cart page
-6. Hanterar klick på plus, minus och ta bort
-7. Initierar när sidan eller komponenter laddats
-*/
-
-/* 1. Hämta och spara varukorg */
 function getCart() {
     return JSON.parse(localStorage.getItem('cart')) || []
 }
@@ -18,25 +6,20 @@ function saveCart(cart) {
     localStorage.setItem('cart', JSON.stringify(cart))
 }
 
-/* 2. Hjälpfunktioner */
-function getCartCount() {
-    const cart = getCart()
-    return cart.reduce((total, item) => total + item.quantity, 0)
-}
-
-function getCartTotal() {
-    const cart = getCart()
-    return cart.reduce((total, item) => total + item.price * item.quantity, 0)
-}
-
 function formatPrice(price) {
     return `${price.toFixed(2)} kr`
 }
 
-/* 3. Cart-logik */
+function getCartCount() {
+    return getCart().reduce((sum, item) => sum + item.quantity, 0)
+}
+
+function getCartTotal() {
+    return getCart().reduce((sum, item) => sum + item.price * item.quantity, 0)
+}
+
 function addToCart(product, quantity = 1) {
     const cart = getCart()
-
     const existingProduct = cart.find((item) => item.id === product.id)
 
     if (existingProduct) {
@@ -63,30 +46,27 @@ function removeFromCart(productId) {
 
 function updateQuantity(productId, newQuantity) {
     const cart = getCart()
-    const product = cart.find((item) => item.id === productId)
+    const item = cart.find((product) => product.id === productId)
 
-    if (!product) return
+    if (!item) return
 
     if (newQuantity <= 0) {
         removeFromCart(productId)
         return
     }
 
-    product.quantity = newQuantity
+    item.quantity = newQuantity
     saveCart(cart)
     refreshCartUI()
 }
 
-/* 4. Rendera badge i navbar */
 function renderCartBadge() {
-    const cartBadge = document.querySelector('.cart-btn-badge')
-    if (!cartBadge) return
+    const badge = document.querySelector('.cart-btn-badge')
+    if (!badge) return
 
-    const totalQty = getCartCount()
-    cartBadge.textContent = totalQty
+    badge.textContent = getCartCount()
 }
 
-/* 5. Rendera mini-cart i navbar */
 function renderNavbarCart() {
     const cartItemsContainer = document.getElementById('cartItems')
     const cartTotal = document.getElementById('cartTotal')
@@ -130,18 +110,28 @@ function renderNavbarCart() {
     cartTotal.textContent = formatPrice(getCartTotal())
 }
 
-/* 6. Rendera cart page */
 function renderCartPage() {
     const cartPageItems = document.getElementById('cartPageItems')
     const cartPageTotal = document.getElementById('cartPageTotal')
+    const cartPageCount = document.getElementById('cartPageCount')
 
-    if (!cartPageItems || !cartPageTotal) return
+    if (!cartPageItems || !cartPageTotal || !cartPageCount) return
 
     const cart = getCart()
 
+    cartPageCount.textContent = getCartCount()
+    cartPageTotal.textContent = formatPrice(getCartTotal())
+
     if (cart.length === 0) {
-        cartPageItems.innerHTML = `<p>Din varukorg är tom.</p>`
-        cartPageTotal.textContent = '0 kr'
+        cartPageItems.innerHTML = `
+            <div class="cart-empty">
+                <h3>Din kundvagn är tom</h3>
+                <p>Lägg till några produkter för att komma igång.</p>
+                <a href="/Frontend/pages/products.html" class="btn btn-dark">
+                    Visa produkter
+                </a>
+            </div>
+        `
         return
     }
 
@@ -157,7 +147,7 @@ function renderCartPage() {
 
                     <div class="cart-page-info">
                         <h3>${item.title}</h3>
-                        <p>Pris: ${formatPrice(item.price)}</p>
+                        <div class="cart-page-price">Pris: ${formatPrice(item.price)}</div>
 
                         <div class="cart-controls">
                             <button class="qty-btn minus" data-id="${item.id}">−</button>
@@ -174,46 +164,41 @@ function renderCartPage() {
             `
         )
         .join('')
-
-    cartPageTotal.textContent = formatPrice(getCartTotal())
 }
 
-/* 7. Uppdatera hela UI:t */
 function refreshCartUI() {
     renderCartBadge()
     renderNavbarCart()
     renderCartPage()
 }
 
-/* 8. Event delegation för plus, minus och remove */
+let cartEventsInitialized = false
+
 function setupCartEvents() {
     document.addEventListener('click', function (e) {
         const target = e.target
         if (!(target instanceof HTMLElement)) return
 
-        const id = Number(target.dataset.id)
-        if (!id) return
+        const productId = Number(target.dataset.id)
+        if (!productId) return
 
         const cart = getCart()
-        const item = cart.find((product) => product.id === id)
+        const item = cart.find((product) => product.id === productId)
         if (!item) return
 
         if (target.classList.contains('plus')) {
-            updateQuantity(id, item.quantity + 1)
+            updateQuantity(productId, item.quantity + 1)
         }
 
         if (target.classList.contains('minus')) {
-            updateQuantity(id, item.quantity - 1)
+            updateQuantity(productId, item.quantity - 1)
         }
 
         if (target.classList.contains('remove-btn')) {
-            removeFromCart(id)
+            removeFromCart(productId)
         }
     })
 }
-
-/* 9. Init */
-let cartEventsInitialized = false
 
 function initCart() {
     refreshCartUI()
