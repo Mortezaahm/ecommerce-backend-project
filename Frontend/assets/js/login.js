@@ -23,6 +23,7 @@ form.addEventListener('submit', async (e) => {
 
         localStorage.setItem('token', data.data.token)
         localStorage.setItem('userId', data.data.userId)
+        localStorage.setItem('name', data.data.name)
 
         alert('Inloggning lyckades!')
 
