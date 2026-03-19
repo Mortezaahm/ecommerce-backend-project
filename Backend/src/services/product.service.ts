@@ -14,7 +14,8 @@ export const getProductsByFilterService = async (
     categoryId?: number,
     minPrice?: number,
     maxPrice?: number,
-    inStock?: boolean
+    inStock?: boolean,
+    sort?: string
 ) => {
     if (minPrice !== undefined && maxPrice !== undefined) {
         if (minPrice > maxPrice) {
@@ -22,7 +23,7 @@ export const getProductsByFilterService = async (
         }
   }
 
-  return await getProductsWithCategoryAndFilter(categoryId, minPrice, maxPrice, inStock);
+  return await getProductsWithCategoryAndFilter(categoryId, minPrice, maxPrice, inStock, sort);
 }
 
 export const getProductByIdService = async (id: number): Promise<Product | null> => {

@@ -23,12 +23,13 @@ const parseBoolean = (value: unknown): boolean | undefined => {
 // GET /products (with filter)
 export const getProductsByFilterController = async (req: Request, res: Response) => {
   try {
-    const { category_id, minPrice, maxPrice, in_stock } = req.query;
+    const { category_id, minPrice, maxPrice, in_stock, sort } = req.query;
     const products = await getProductsByFilterService (
       parseNumber(category_id),
       parseNumber(minPrice),
       parseNumber(maxPrice),
-      parseBoolean(in_stock)
+      parseBoolean(in_stock),
+      sort as string | undefined
     );
     return res.status(200).json(products)
   } catch (error) {

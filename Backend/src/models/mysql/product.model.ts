@@ -103,7 +103,8 @@ export const getProductsWithCategoryAndFilter = async (
   categoryId?: number,
   minPrice?: number,
   maxPrice?: number,
-  in_stock?: boolean
+  in_stock?: boolean,
+  sort?: string
 ) => {
   let query = `
     SELECT
@@ -112,6 +113,7 @@ export const getProductsWithCategoryAndFilter = async (
       p.info,
       p.price,
       p.in_stock,
+      p.created_at,
       c.category_id AS c_id,
       c.title AS c_name
     FROM products p
@@ -141,6 +143,32 @@ export const getProductsWithCategoryAndFilter = async (
       params.push(in_stock ? 1 : 0); // convert boolean to 1 or 0 for MySQL
     }
 
+    // sorting only for MySQL fields
+    if (sort) {
+        switch (sort) {
+        case "price_asc":
+        query += " ORDER BY p.price ASC";
+        break;
+        case "price_desc":
+        query += " ORDER BY p.price DESC";
+        break;
+        case "created_at_asc":
+        query += " ORDER BY p.created_at ASC";
+        break;
+        case "created_at_desc":
+        query += " ORDER BY p.created_at DESC";
+        break;
+        case "category_asc":
+        query += " ORDER BY c.title ASC";
+        break;
+        case "category_desc":
+        query += " ORDER BY c.title DESC";
+        break;
+        default:
+        query += " ORDER BY p.product_id ASC"; // default
+    }
+  }
+
   const [rows] = await pool.execute(query, params);
   return (rows as any[]).map((row) => ({
     product_id: row.product_id,
@@ -148,6 +176,7 @@ export const getProductsWithCategoryAndFilter = async (
     info: row.info,
     price: row.price,
     in_stock: Boolean(row.in_stock), // convert to boolean
+    created_at: row.created_at,
     category: {
       category_id: row.c_id,
       name: row.c_name
