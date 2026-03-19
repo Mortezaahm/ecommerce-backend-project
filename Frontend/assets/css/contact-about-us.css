@@ -7,7 +7,7 @@ CSS-kommentar: Strukturöversikt
 */
 
 main {
-    background: linear-gradient(135deg, #fff6f2 0%, #ffe6e0 50%, #ffd5cc 100%);
+    background: #efe9e1;
 }
 
 /* 1. About */
@@ -21,10 +21,12 @@ main {
 
 .about-section h2 {
     margin-bottom: 1rem;
+    color: #403226;
 }
 
 .about-section p {
     margin-bottom: 1rem;
+    color: #403226;
 }
 
 /* 2. Filosofi */
@@ -52,13 +54,14 @@ main {
     margin: auto;
     padding: 4rem 1.5rem 1rem;
     text-align: center;
+    color: #403226;
 }
 
 .contact-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 2rem;
-    margin-top: 2rem;
+    margin: 2rem 0;
 }
 
 /* 4. Mobilanpassning */

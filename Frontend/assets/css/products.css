@@ -44,10 +44,9 @@ main {
 
 .category-btn:hover,
 .category-btn.active {
-    background-color: #ccc;
+    background-color: #efe9e1;
 }
 
-/* Sort right */
 .sort-wrapper {
     position: relative;
     display: flex;
@@ -91,7 +90,7 @@ main {
     display: flex;
     flex-direction: column;
     min-width: 220px;
-    background-color: #efe9e1;
+    background-color: #f3f3f3;
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
@@ -112,7 +111,7 @@ main {
 
 .sort-option:hover,
 .sort-option.active {
-   background-color: #ccc;
+    background-color: #efe9e1;
 }
 
 .hidden {
@@ -133,7 +132,7 @@ main {
 .product {
     display: flex;
     flex-direction: column;
-    background-color: #b23a48;
+    background-color: #ffffff;
     overflow: hidden;
     min-height: 100%;
     transition:
@@ -144,7 +143,6 @@ main {
 .product:hover {
     transform: translateY(-4px);
     cursor: pointer;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
 /* Fixed image area */
@@ -168,19 +166,19 @@ main {
     align-self: flex-start;
     margin-bottom: 0.5rem;
     font-size: 0.8rem;
-    color: #efe9e1;
+    color: #555;
 }
 
 .product h2 {
     font-size: 1.05rem;
     margin: 0 0 0.5rem;
-    color: #f3f3f3;
+    color: #36291f;
     line-height: 1.3;
 }
 
 .product p {
     font-size: 0.9rem;
-    color: #efe9e1;
+    color: #555;
     line-height: 1.5;
     margin: 0 0 1rem;
     flex: 1;
@@ -188,7 +186,7 @@ main {
 
 .price {
     font-weight: bold;
-    color: #f3f3f3;
+    color: #36291f;
     margin-top: auto;
     font-size: 1rem;
     margin-bottom: 2rem;
