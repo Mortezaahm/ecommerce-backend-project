@@ -47,6 +47,10 @@ export const updateProductService = async (
     product: Partial<Product>
 ): Promise<boolean> => {
 
+    if (Object.keys(product).length === 0) {
+        throw new Error("No fields provided for update");
+    }
+
     if (product.price !== undefined && product.price < 0) {
         throw new Error("Price cannot be negative");
     }

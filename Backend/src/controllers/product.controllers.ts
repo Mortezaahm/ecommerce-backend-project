@@ -70,23 +70,7 @@ export const getProductByIdController = async (req: Request, res: Response) => {
 // create product ==> /products
 export const createProductController = async (req: Request, res: Response) => {
   try {
-    const {title, info, price, category_id, in_stock} = req.body;
-    if (!title || price === undefined) {
-      return res.status(400).json({
-        message: "Title and price are required"
-      })
-    }
-
-    // validate in_stock if provided
-    if (in_stock !== undefined && typeof in_stock !== "boolean") {
-      return res.status(400).json({
-        message: "in_stock must be a boolean value"
-      })
-    }
-
-    const newProductId = await createProductService ({
-      title, info, price, category_id, in_stock
-    });
+    const newProductId = await createProductService (req.body);
 
     return res.status(201).json({
       message: "Product created successfully",
