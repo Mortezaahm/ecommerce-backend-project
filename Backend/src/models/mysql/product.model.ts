@@ -1,5 +1,6 @@
 // product model mysql
 import pool from "../../config/mysql";
+import type { ResultSetHeader, RowDataPacket } from "mysql2";
 
 export interface Product {
     product_id?: number,
@@ -66,7 +67,7 @@ export const getProductByFilter = async(
 
 // new function for join with categories
 export const getProductByIdWithCategory = async (id: number) => {
-  const [rows] = await pool.execute(
+  const [rows] = await pool.execute<RowDataPacket[]>(
     `
     SELECT
       p.product_id,
@@ -83,7 +84,7 @@ export const getProductByIdWithCategory = async (id: number) => {
     [id]
   );
 
-  const row = (rows as any[])[0];
+  const row = (rows as RowDataPacket[])[0];
   if (!row) return null;
 
   return {
@@ -169,8 +170,8 @@ export const getProductsWithCategoryAndFilter = async (
     }
   }
 
-  const [rows] = await pool.execute(query, params);
-  return (rows as any[]).map((row) => ({
+  const [rows] = await pool.execute<RowDataPacket[]>(query, params);
+  return (rows as RowDataPacket[]).map((row) => ({
     product_id: row.product_id,
     title: row.title,
     info: row.info,
@@ -189,7 +190,7 @@ export const getProductsWithCategoryAndFilter = async (
 export const createProduct = async (product: Product) => {
   const { title, info, price, category_id, in_stock } = product;
 
-  const [result]: any = await pool.execute(
+  const [result] = await pool.execute<ResultSetHeader>(
     `
     INSERT INTO products (title, info, price, category_id, in_stock)
     VALUES (?, ?, ?, ?, ?)
@@ -239,7 +240,7 @@ export const updateProduct = async (
     query += " WHERE product_id = ?";
     params.push(id);
 
-    const [result]: any = await pool.execute(query, params);
+    const [result] = await pool.execute<ResultSetHeader>(query, params);
 
     return result.affectedRows > 0;
 
@@ -247,7 +248,7 @@ export const updateProduct = async (
 
 // delete product
 export const deleteProduct = async (id:number): Promise<boolean> => {
-    const [result]: any = await pool.execute(
+    const [result] = await pool.execute<ResultSetHeader>(
         "DELETE FROM products WHERE product_id = ?",
         [id]
     );

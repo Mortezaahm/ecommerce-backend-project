@@ -1,7 +1,7 @@
 // category model mysql
 import pool from "../../config/mysql";
-
-export interface Category {
+import type { ResultSetHeader, RowDataPacket } from "mysql2";
+export interface Category extends RowDataPacket {
     category_id?: number,
     title: string
 }
@@ -22,7 +22,7 @@ export const getCategoryById = async(id: number): Promise<Category | null> => {
 
 // create a new category admin only
 export const createCategory = async (title: string): Promise<number> =>{
-    const [result]:any = await pool.execute(
+    const [result] = await pool.execute<ResultSetHeader>(
         "INSERT INTO categories (title) VALUES (?)",
         [title]
     );
@@ -31,7 +31,7 @@ export const createCategory = async (title: string): Promise<number> =>{
 
 // update categories admin only
 export const updateCategory = async (id: number, title: string) :Promise<boolean> =>{
-    const[result]: any = await pool.execute(
+    const[result] = await pool.execute<ResultSetHeader>(
         "UPDATE categories SET title = ? WHERE category_id = ?",
         [title, id]
     );
@@ -41,7 +41,7 @@ export const updateCategory = async (id: number, title: string) :Promise<boolean
 
 // delete category - little tricky - admin only
 export const deleteCategory = async (id: number) : Promise<boolean> => {
-    const [result]:any = await pool.execute(
+    const [result] = await pool.execute<ResultSetHeader>(
         "DELETE FROM categories WHERE category_id = ?",
         [id]
     );
