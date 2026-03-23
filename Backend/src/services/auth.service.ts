@@ -53,7 +53,7 @@ export const registerUser = async (data: CleanRegisterInput) => {
     const userId = await createUser (userData);
 
     //generate Token
-    const token = generateToken(userId);
+    const token = generateToken(userId, "user");
     return {
         token,
         userId
@@ -77,11 +77,16 @@ export const loginUser = async (data: LoginInput) => {
   }
 
   //generate token
-  const token = generateToken(user.id);
+  const token = generateToken(user.id, user.role);
 
   return {
     token,
-    userId: user.id
+    user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+    }
  };
 }
 
@@ -120,7 +125,7 @@ export const updateUserService = async (id: number, data: UpdateUserInput) => {
 //  *******=======********* Delete function *******=======*********
 export const deleteUserService = async(id:number) => {
     // 1) check if user exists
-    const existingUser = await findUserById(id);
+    const existingUser = await deleteUser(id);
 
     if (!existingUser) {
         throw new Error ("User not found")
