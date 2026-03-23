@@ -6,6 +6,9 @@ form.addEventListener('submit', async (e) => {
     const email = document.getElementById('email').value.trim()
     const password = document.getElementById('password').value
 
+    const errorBox = document.getElementById('login-error')
+    if (errorBox) errorBox.textContent = ''
+
     try {
         const response = await fetch('http://localhost:3000/api/auth/login', {
             method: 'POST',
@@ -18,18 +21,37 @@ form.addEventListener('submit', async (e) => {
         const data = await response.json()
 
         if (!response.ok) {
-            throw new Error(data.message)
+            throw new Error(data.message || 'Inloggningen misslyckades.')
         }
 
-        localStorage.setItem('token', data.data.token)
-        localStorage.setItem('userId', data.data.userId)
-        localStorage.setItem('name', data.data.name)
+        const token = data.data?.token
+        const userId = data.data?.userId
 
-        alert('Inloggning lyckades!')
+        if (!token || !userId) {
+            throw new Error('Ogiltigt svar från servern.')
+        }
+
+        localStorage.setItem('token', token)
+        localStorage.setItem('userId', userId)
+
+        const meResponse = await fetch('http://localhost:3000/api/auth/me', {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+
+        const meData = await meResponse.json()
+
+        if (meResponse.ok && meData.user?.name) {
+            localStorage.setItem('name', meData.user.name)
+        }
 
         window.location.href = '../pages/member.html'
     } catch (error) {
-        alert(error.message)
         console.error(error)
+
+        if (errorBox) {
+            errorBox.textContent = error.message
+        }
     }
 })
