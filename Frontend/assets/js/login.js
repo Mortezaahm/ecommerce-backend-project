@@ -13,11 +13,9 @@ form.addEventListener('submit', async (e) => {
         const response = await fetch('http://localhost:3000/api/auth/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                email,
-                password
-            })
+            body: JSON.stringify({ email, password })
         })
+
         const data = await response.json()
 
         if (!response.ok) {
@@ -25,33 +23,31 @@ form.addEventListener('submit', async (e) => {
         }
 
         const token = data.data?.token
-        const userId = data.data?.userId
+        const user = data.data?.user
 
-        if (!token || !userId) {
+        if (!token || !user?.id) {
             throw new Error('Ogiltigt svar från servern.')
         }
 
         localStorage.setItem('token', token)
-        localStorage.setItem('userId', userId)
+        localStorage.setItem('userId', user.id)
+        localStorage.setItem('name', user.name || '')
+        localStorage.setItem('role', user.role || '')
 
-        const meResponse = await fetch('http://localhost:3000/api/auth/me', {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
+        alert('Inloggning lyckades!')
 
-        const meData = await meResponse.json()
-
-        if (meResponse.ok && meData.user?.name) {
-            localStorage.setItem('name', meData.user.name)
+        if (user.role === 'admin') {
+            window.location.href = '../pages/admin.html'
+        } else {
+            window.location.href = '../pages/member.html'
         }
-
-        window.location.href = '../pages/member.html'
     } catch (error) {
         console.error(error)
 
         if (errorBox) {
             errorBox.textContent = error.message
+        } else {
+            alert(error.message)
         }
     }
 })
