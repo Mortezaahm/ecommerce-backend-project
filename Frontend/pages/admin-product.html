@@ -1,0 +1,51 @@
+<!-- pages/admin-products.html -->
+<!doctype html>
+<html lang="sv">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Admin - Products</title>
+    <link rel="stylesheet" href="../assets/css/style.css" />
+  </head>
+  <body>
+    <!-- Header component -->
+    <div id="header"></div>
+
+    <main>
+      <h1>Admin - Products</h1>
+
+      <h2>Products</h2>
+      <table id="products-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Price</th>
+            <th>In Stock</th>
+            <th>Category</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Products will be displayed here -->
+        </tbody>
+      </table>
+
+      <h2>Add New Product</h2>
+      <form id="add-product-form">
+        <input type="text" id="title" placeholder="Title" required />
+        <input type="number" id="price" placeholder="Price" required />
+        <select id="in_stock">
+          <option value="true">In Stock</option>
+          <option value="false">Out of Stock</option>
+        </select>
+        <input type="text" id="category" placeholder="Category" required />
+        <button type="submit">Add Product</button>
+      </form>
+    </main>
+
+    <!-- Footer component -->
+    <div id="footer"></div>
+
+    <script src="../assets/js/pages/admin-products.js"></script>
+  </body>
+</html>
