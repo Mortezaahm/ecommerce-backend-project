@@ -1,13 +1,18 @@
 import express from "express";
 import authRoutes from "./routes/auth.routes";
-import cartRoutes from "./routes/cart.routes";
+import productRoutes from "./routes/product.routes";
+import categoryRoutes from "./routes/category.routes";
+import cartItemRoutes from "./routes/cartItem.routes"; // <-- din import
 
 const app = express();
 
 app.use(express.json());
-app.use("/api/cart", cartRoutes); // just for testing, can be removed later
-app.use("/api/auth", authRoutes);
-//app.use("/api/products", productRoutes);
+
+app.use("/api/auth", authRoutes); // login and register include update and delete user
+app.use("/api/products", productRoutes); // routes for product whole CRUD
+app.use("/api/categories", categoryRoutes); // routes for categories
+app.use("/api/cart", cartItemRoutes); // <-- din route
+
 app.get("/health", (req,res) =>{
     res.json({
         status: "OK",
