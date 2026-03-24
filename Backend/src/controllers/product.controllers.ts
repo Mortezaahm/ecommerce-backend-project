@@ -23,12 +23,13 @@ const parseBoolean = (value: unknown): boolean | undefined => {
 // GET /products (with filter)
 export const getProductsByFilterController = async (req: Request, res: Response) => {
   try {
-    const { category_id, minPrice, maxPrice, in_stock } = req.query;
+    const { category_id, minPrice, maxPrice, in_stock, sort } = req.query;
     const products = await getProductsByFilterService (
       parseNumber(category_id),
       parseNumber(minPrice),
       parseNumber(maxPrice),
-      parseBoolean(in_stock)
+      parseBoolean(in_stock),
+      sort as string | undefined
     );
     return res.status(200).json(products)
   } catch (error) {
@@ -69,23 +70,7 @@ export const getProductByIdController = async (req: Request, res: Response) => {
 // create product ==> /products
 export const createProductController = async (req: Request, res: Response) => {
   try {
-    const {title, info, price, category_id, in_stock} = req.body;
-    if (!title || price === undefined) {
-      return res.status(400).json({
-        message: "Title and price are required"
-      })
-    }
-
-    // validate in_stock if provided
-    if (in_stock !== undefined && typeof in_stock !== "boolean") {
-      return res.status(400).json({
-        message: "in_stock must be a boolean value"
-      })
-    }
-
-    const newProductId = await createProductService ({
-      title, info, price, category_id, in_stock
-    });
+    const newProductId = await createProductService (req.body);
 
     return res.status(201).json({
       message: "Product created successfully",
