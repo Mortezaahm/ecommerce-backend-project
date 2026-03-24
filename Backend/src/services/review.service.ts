@@ -22,27 +22,11 @@ export const createReviewService = async ({
     rating,
     comment
 }: CreateReviewInput) => {
-    if (!productId || !rating || !comment) {
-        throw new Error('productId, rating and comment are required')
-    }
-
-    if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
-        throw new Error('Rating must be an integer between 1 and 5')
-    }
-
-    if (!comment.trim()) {
-        throw new Error('Comment cannot be empty')
-    }
-
     const user = await findUserById(userId)
-    if (!user) {
-        throw new Error('User not found')
-    }
+    if (!user) throw new Error('User not found')
 
     const product = await getProductById(productId)
-    if (!product) {
-        throw new Error('Product not found')
-    }
+    if (!product) throw new Error('Product not found')
 
     const review = await ReviewModel.create({
         userId,
@@ -50,7 +34,6 @@ export const createReviewService = async ({
         rating,
         comment: comment.trim()
     })
-
     return review
 }
 
@@ -58,56 +41,30 @@ export const getReviewsByProductService = async (
     productId: number,
     sort?: string
 ) => {
-    if (!productId) {
-        throw new Error('ProductId is required')
+    const sortOptions: Record<string, any> = {
+        highest: { rating: -1 },
+        lowest: { rating: 1 },
+        oldest: { createdAt: 1 },
+        newest: { createdAt: -1 }
     }
-
-    let sortOption: any = { createdAt: -1 }
-
-    switch (sort) {
-        case 'highest':
-            sortOption = { rating: -1 }
-            break
-        case 'lowest':
-            sortOption = { rating: 1 }
-            break
-        case 'oldest':
-            sortOption = { createdAt: 1 }
-            break
-        case 'newest':
-        default:
-            sortOption = { createdAt: -1 }
-    }
-
-    return await ReviewModel.find({ productId }).sort(sortOption)
+    return await ReviewModel.find({ productId }).sort(
+        sortOptions[sort || 'newest']
+    )
 }
 
 export const getReviewsByUserService = async (
     userId: number,
     sort?: string
 ) => {
-    if (!userId) {
-        throw new Error('UserId is required')
+    const sortOptions: Record<string, any> = {
+        highest: { rating: -1 },
+        lowest: { rating: 1 },
+        oldest: { createdAt: 1 },
+        newest: { createdAt: -1 }
     }
-
-    let sortOption: any = { createdAt: -1 }
-
-    switch (sort) {
-        case 'highest':
-            sortOption = { rating: -1 }
-            break
-        case 'lowest':
-            sortOption = { rating: 1 }
-            break
-        case 'oldest':
-            sortOption = { createdAt: 1 }
-            break
-        case 'newest':
-        default:
-            sortOption = { createdAt: -1 }
-    }
-
-    return await ReviewModel.find({ userId }).sort(sortOption)
+    return await ReviewModel.find({ userId }).sort(
+        sortOptions[sort || 'newest']
+    )
 }
 
 export const updateReviewService = async ({
@@ -117,28 +74,11 @@ export const updateReviewService = async ({
     comment
 }: UpdateReviewInput) => {
     const review = await ReviewModel.findById(reviewId)
+    if (!review) throw new Error('Review not found')
+    if (review.userId !== userId) throw new Error('Forbidden')
 
-    if (!review) {
-        throw new Error('Review not found')
-    }
-
-    if (review.userId !== userId) {
-        throw new Error('Forbidden')
-    }
-
-    if (rating !== undefined) {
-        if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
-            throw new Error('Rating must be an integer between 1 and 5')
-        }
-        review.rating = rating
-    }
-
-    if (comment !== undefined) {
-        if (!comment.trim()) {
-            throw new Error('Comment cannot be empty')
-        }
-        review.comment = comment.trim()
-    }
+    if (rating !== undefined) review.rating = rating
+    if (comment !== undefined) review.comment = comment.trim()
 
     await review.save()
     return review
@@ -146,17 +86,10 @@ export const updateReviewService = async ({
 
 export const deleteReviewService = async (reviewId: string, userId: number) => {
     const review = await ReviewModel.findById(reviewId)
-
-    if (!review) {
-        throw new Error('Review not found')
-    }
-
-    if (review.userId !== userId) {
-        throw new Error('Forbidden')
-    }
+    if (!review) throw new Error('Review not found')
+    if (review.userId !== userId) throw new Error('Forbidden')
 
     await ReviewModel.findByIdAndDelete(reviewId)
-
     return { message: 'Review deleted successfully' }
 }
 
@@ -172,14 +105,7 @@ export const getAverageRatingByProductService = async (productId: number) => {
         }
     ])
 
-    if (result.length === 0) {
-        return {
-            productId,
-            averageRating: 0,
-            totalReviews: 0
-        }
-    }
-
+    if (!result.length) return { productId, averageRating: 0, totalReviews: 0 }
     return {
         productId,
         averageRating: Number(result[0].averageRating.toFixed(1)),
