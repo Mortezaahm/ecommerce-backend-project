@@ -1,20 +1,7 @@
 import ReviewModel from '../models/mongodb/review.model'
 import { findUserById } from '../models/mysql/user.model'
 import { getProductById } from '../models/mysql/product.model'
-
-interface CreateReviewInput {
-    userId: number
-    productId: number
-    rating: number
-    comment: string
-}
-
-interface UpdateReviewInput {
-    reviewId: string
-    userId: number
-    rating?: number
-    comment?: string
-}
+import type { CreateReviewInput, UpdateReviewInput } from '../models/mongodb/review.model'
 
 export const createReviewService = async ({
     userId,
