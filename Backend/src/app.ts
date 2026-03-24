@@ -2,7 +2,6 @@ import express from "express";
 import cors from "cors";
 import authRoutes from "./routes/auth.routes";
 import productRoutes from "./routes/product.routes";
-import orderRoutes from "./routes/order.routes";
 import reviewRoutes from "./routes/review.routes";
 
 const app = express();
@@ -12,7 +11,6 @@ app.use(express.json());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
-app.use("/api/orders", orderRoutes);
 app.use("/api/reviews", reviewRoutes);
 
 app.get("/health", (req,res) =>{

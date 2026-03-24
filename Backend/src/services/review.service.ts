@@ -1,6 +1,6 @@
 import ReviewModel from '../models/mongodb/review.model'
 import { findUserById } from '../models/mysql/user.model'
-import { findProductById } from '../models/mysql/product.model'
+import { getProductById} from '../models/mysql/product.model'
 
 interface CreateReviewInput {
     userId: number
@@ -39,7 +39,7 @@ export const createReviewService = async ({
         throw new Error('User not found')
     }
 
-    const product = await findProductById(productId)
+    const product = await getProductById(productId)
     if (!product) {
         throw new Error('Product not found')
     }

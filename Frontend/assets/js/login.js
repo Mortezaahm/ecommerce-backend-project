@@ -5,7 +5,6 @@ form.addEventListener('submit', async (e) => {
 
     const email = document.getElementById('email').value.trim()
     const password = document.getElementById('password').value
-
     const errorBox = document.getElementById('login-error')
     if (errorBox) errorBox.textContent = ''
 
@@ -22,28 +21,24 @@ form.addEventListener('submit', async (e) => {
             throw new Error(data.message || 'Inloggningen misslyckades.')
         }
 
+        // Backend skickar bara token och userId
         const token = data.data?.token
-        const user = data.data?.user
+        const userId = data.data?.userId
 
-        if (!token || !user?.id) {
+        if (!token || !userId) {
             throw new Error('Ogiltigt svar från servern.')
         }
 
+        // Spara i localStorage
         localStorage.setItem('token', token)
-        localStorage.setItem('userId', user.id)
-        localStorage.setItem('name', user.name || '')
-        localStorage.setItem('role', user.role || '')
+        localStorage.setItem('userId', userId)
+        localStorage.setItem('name', '')
+        localStorage.setItem('role', '')
 
-        alert('Inloggning lyckades!')
-
-        if (user.role === 'admin') {
-            window.location.href = '../pages/admin.html'
-        } else {
-            window.location.href = '../pages/member.html'
-        }
+        // Skicka alltid till member-sidan
+        window.location.href = '../pages/member.html'
     } catch (error) {
         console.error(error)
-
         if (errorBox) {
             errorBox.textContent = error.message
         } else {
