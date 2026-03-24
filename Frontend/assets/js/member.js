@@ -1,70 +1,51 @@
-const memberName = document.getElementById('member-name')
-const memberLogoutBtn = document.getElementById('member-logout-btn')
+const token = localStorage.getItem("token");
+
+if (!token) {
+  alert("Du måste logga in först");
+  window.location.href = "../pages/login.html";
+}
+
+const memberName = document.getElementById("member-name");
+const logoutBtn = document.getElementById("logout-btn");
 
 async function loadMemberPage() {
-    const token = localStorage.getItem('token')
-    const userId = localStorage.getItem('userId')
-    const savedName = localStorage.getItem('name')
+  try {
+    const response = await fetch(`http://localhost:3000/api/auth/me`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-    if (savedName && memberName) {
-        memberName.textContent = savedName
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Kunde inte hämta användardata");
     }
 
-    if (!token || !userId) {
-        window.location.href = '/Frontend/pages/login.html'
-        return
-    }
+    memberName.textContent = data.data.name;
+  } catch (error) {
+    console.error(error);
+    alert("Sessionen är ogiltig, logga in igen");
 
-    try {
-        const response = await fetch('http://localhost:3000/api/auth/me', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`
-            }
-        })
+    localStorage.removeItem("token");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("name");
 
-        const data = await response.json()
-
-        if (!response.ok) {
-            throw new Error(data.message || 'Kunde inte hämta användardata')
-        }
-
-        const user = data.user
-
-        if (!user) {
-            throw new Error('Ingen användardata hittades')
-        }
-
-        if (memberName) {
-            memberName.textContent = user.name || 'medlem'
-        }
-
-        localStorage.setItem('userId', String(user.id))
-        localStorage.setItem('name', user.name || '')
-    } catch (error) {
-        console.error(error)
-
-        localStorage.removeItem('token')
-        localStorage.removeItem('userId')
-        localStorage.removeItem('name')
-
-        window.location.href = '/Frontend/pages/login.html'
-    }
+    window.location.href = "../pages/login.html";
+  }
 }
 
 function logout() {
-    localStorage.removeItem('token')
-    localStorage.removeItem('userId')
-    localStorage.removeItem('name')
+  localStorage.removeItem("token");
+  localStorage.removeItem("userId");
+  localStorage.removeItem("name");
 
-    window.location.href = '/Frontend/pages/login.html'
+  alert("Du har loggats ut.");
+  window.location.href = "../pages/login.html";
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    if (memberLogoutBtn) {
-        memberLogoutBtn.addEventListener('click', logout)
-    }
+logoutBtn.addEventListener("click", logout);
 
-    loadMemberPage()
-})
+loadMemberPage();
