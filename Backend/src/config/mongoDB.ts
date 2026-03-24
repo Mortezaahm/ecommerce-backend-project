@@ -1,47 +1,18 @@
-import mongoose, {Document, Schema} from "mongoose";
-import {env} from "./env";
+import mongoose from 'mongoose'
 
-const connectMongo = async () => {
-  await mongoose.connect(env.MONGO_URI);
-  console.log("MongoDB connected");
-};
+const connectDB = async () => {
+    try {
+        const { MONGO_USER, MONGO_PASS, MONGO_CLUSTER, MONGO_DB } = process.env
 
+        await mongoose.connect(
+            `mongodb+srv://${MONGO_USER}:${MONGO_PASS}@${MONGO_CLUSTER}/${MONGO_DB}?retryWrites=true&w=majority`
+        )
 
-export interface Review extends Document {
-  productId: string;
-  userId: string;
-  rating: number;
-  comment: string;
-  createdAt: Date;
-  updatedAt: Date;
+        console.log('MongoDB connected')
+    } catch (err) {
+        console.log('MongoDB error:', err)
+        throw err
+    }
 }
 
-const reviewSchema: Schema = new Schema(
-  {
-    productId: {
-      type: String,
-      required: true,
-    },
-
-    userId: {
-      type: String,
-      required: true,
-    },
-
-    rating: {
-      type: Number,
-      required: true,
-      min: 1,
-      max: 5,
-    },
-
-    comment: {
-      type: String,
-      required: true,
-    },
-  },
-  { timestamps: true }
-  );
-
-  export default connectMongo;
-  export const ReviewModel = mongoose.model<Review>("Review", reviewSchema);
+export default connectDB

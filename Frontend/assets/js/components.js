@@ -33,5 +33,57 @@ async function initComponents() {
     document.dispatchEvent(new CustomEvent('componentsLoaded'))
 }
 
+// components.js – efter document.dispatchEvent('componentsLoaded')
+async function updateNavbar() {
+    const token = localStorage.getItem('token')
+    const userId = localStorage.getItem('userId')
+    const name = localStorage.getItem('name')
+
+    const isLoggedIn = !!token && !!userId
+
+    const accountMainLink = document.getElementById('account-main-link')
+    const registerRow = document.getElementById('register-row')
+    const logoutBtn = document.getElementById('logout-btn')
+    const ordersLink = document.getElementById('orders-link')
+    const reviewsLink = document.getElementById('reviews-link')
+    const accountDropdown = document.getElementById('accountDropdown')
+
+    if (isLoggedIn) {
+        if (accountMainLink) {
+            accountMainLink.textContent = 'Min sida'
+            accountMainLink.href = '/Frontend/pages/member.html'
+        }
+
+        if (registerRow) registerRow.classList.add('d-none')
+        if (logoutBtn) logoutBtn.classList.remove('d-none')
+        if (ordersLink)
+            ordersLink.href = '/Frontend/pages/member.html#bestallningar'
+        if (reviewsLink)
+            reviewsLink.href = '/Frontend/pages/member.html#recensioner'
+        if (accountDropdown && name)
+            accountDropdown.setAttribute('aria-label', `Mitt konto, ${name}`)
+    } else {
+        if (accountMainLink) {
+            accountMainLink.textContent = 'Logga in'
+            accountMainLink.href = '/Frontend/pages/login.html'
+        }
+
+        if (registerRow) registerRow.classList.remove('d-none')
+        if (logoutBtn) logoutBtn.classList.add('d-none')
+        if (ordersLink) ordersLink.href = '/Frontend/pages/login.html'
+        if (reviewsLink) reviewsLink.href = '/Frontend/pages/login.html'
+    }
+
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', (e) => {
+            e.preventDefault()
+            localStorage.clear()
+            window.location.href = '/Frontend/pages/login.html'
+        })
+    }
+}
+
+document.addEventListener('componentsLoaded', updateNavbar)
+
 /* Kör startfunktionen */
 initComponents()

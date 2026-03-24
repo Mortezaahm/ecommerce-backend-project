@@ -54,11 +54,12 @@
                             <a
                                 href="/Frontend/pages/login.html"
                                 class="account-login-btn"
+                                id="account-main-link"
                             >
                                 Logga in
                             </a>
 
-                            <div class="account-register-row">
+                            <div class="account-register-row" id="register-row">
                                 <a
                                     href="/Frontend/pages/register.html"
                                     class="account-register-link"
@@ -72,14 +73,16 @@
                             <div class="account-guest-links">
                                 <a
                                     class="dropdown-item"
-                                    href="/Frontend/pages/mina-bestallningar.html"
+                                    id="orders-link"
+                                    href="/Frontend/pages/login.html"
                                 >
                                     Mina beställningar
                                 </a>
 
                                 <a
                                     class="dropdown-item"
-                                    href="/Frontend/pages/mina-recesioner.html"
+                                    id="reviews-link"
+                                    href="/Frontend/pages/login.html"
                                 >
                                     Mina recensioner
                                 </a>
@@ -93,8 +96,8 @@
 
                                 <a
                                     id="logout-btn"
-                                    class="logout"
-                                    href="/Frontend/pages/login.html"
+                                    class="dropdown-item d-none"
+                                    href="#"
                                 >
                                     Logga ut
                                 </a>
