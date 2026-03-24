@@ -109,17 +109,90 @@ function renderUserReviews(reviews) {
     reviewsContainer.innerHTML = reviews
         .map(
             (r) => `
-        <div class="review-card">
+        <div class="review-card" data-review-id="${r._id}">
             <div class="review-header">
                 ${renderStars(r.rating)}
                 <span>${r.product?.title || 'Produkt okänd'}</span>
             </div>
             <p>${r.comment}</p>
             <small>Datum: ${new Date(r.createdAt).toLocaleDateString()}</small>
+            <div class="review-actions">
+                <button class="edit-review-btn">Redigera</button>
+                <button class="delete-review-btn">Ta bort</button>
+            </div>
         </div>
     `
         )
         .join('')
+
+    setupReviewActions()
+}
+
+function setupReviewActions() {
+    document.querySelectorAll('.edit-review-btn').forEach((btn) => {
+        btn.addEventListener('click', async (e) => {
+            const reviewCard = e.target.closest('.review-card')
+            const reviewId = reviewCard.dataset.reviewId
+            const newComment = prompt('Skriv ny kommentar:')
+            const newRating = parseInt(prompt('Ange nytt betyg (1-5):'), 10)
+
+            if (
+                !newComment ||
+                isNaN(newRating) ||
+                newRating < 1 ||
+                newRating > 5
+            )
+                return
+
+            try {
+                const token = getToken()
+                const res = await fetch(`${API_BASE}/api/reviews/${reviewId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        comment: newComment,
+                        rating: newRating
+                    })
+                })
+
+                if (!res.ok) throw new Error('Kunde inte uppdatera recensionen')
+                alert('Recension uppdaterad!')
+                loadMemberPage()
+            } catch (err) {
+                console.error(err)
+                alert('Fel vid uppdatering av recension')
+            }
+        })
+    })
+
+    document.querySelectorAll('.delete-review-btn').forEach((btn) => {
+        btn.addEventListener('click', async (e) => {
+            if (!confirm('Är du säker på att du vill ta bort recensionen?'))
+                return
+
+            const reviewCard = e.target.closest('.review-card')
+            const reviewId = reviewCard.dataset.reviewId
+
+            try {
+                const token = getToken()
+                const res = await fetch(`${API_BASE}/api/reviews/${reviewId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                })
+
+                if (!res.ok) throw new Error('Kunde inte ta bort recensionen')
+                loadMemberPage()
+            } catch (err) {
+                console.error(err)
+
+            }
+        })
+    })
 }
 
 // ====== LOAD USER ORDERS ======
