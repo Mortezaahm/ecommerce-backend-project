@@ -3,6 +3,7 @@ const reviewsContainer = document.getElementById('member-reviews')
 const ordersContainer = document.getElementById('member-orders')
 const API_BASE = 'http://localhost:3000'
 
+// ====== Auth helpers ======
 function getToken() {
     return localStorage.getItem('token')
 }
@@ -16,25 +17,14 @@ function requireAuth() {
     return true
 }
 
-function getUserIdFromToken() {
-    const token = getToken()
-    if (!token) return null
-    try {
-        const payload = JSON.parse(atob(token.split('.')[1]))
-        return payload.id
-    } catch {
-        return null
-    }
-}
-
 // ====== LOAD MEMBER PAGE ======
 async function loadMemberPage() {
     if (!requireAuth()) return
 
     try {
         const token = getToken()
+        // Hämta användardata
         const res = await fetch(`${API_BASE}/api/auth/me`, {
-            method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`
@@ -73,15 +63,36 @@ function setupLogout() {
     })
 }
 
-// ====== LOAD REVIEWS ======
+// ====== LOAD USER REVIEWS ======
 async function loadUserReviews(userId) {
     if (!reviewsContainer) return
     try {
         const token = getToken()
+
+        // Hämta reviews
         const res = await fetch(`${API_BASE}/api/reviews/user/${userId}`, {
             headers: token ? { Authorization: `Bearer ${token}` } : {}
         })
-        const reviews = await res.json()
+        let reviews = await res.json()
+
+        // Hämta alla produkter för mapping
+        const productsRes = await fetch(`${API_BASE}/api/products`, {
+            headers: { 'Content-Type': 'application/json' }
+        })
+        const products = await productsRes.json()
+
+        // Mappa productId -> produkt
+        const productsMap = {}
+        products.forEach((p) => {
+            productsMap[p.product_id] = p
+        })
+
+        // Lägg till produktdata i reviews
+        reviews = reviews.map((r) => ({
+            ...r,
+            product: productsMap[r.productId] || null
+        }))
+
         renderUserReviews(reviews)
     } catch (err) {
         console.error(err)
@@ -111,7 +122,7 @@ function renderUserReviews(reviews) {
         .join('')
 }
 
-// ====== LOAD ORDERS ======
+// ====== LOAD USER ORDERS ======
 async function loadUserOrders(userId) {
     if (!ordersContainer) return
     try {

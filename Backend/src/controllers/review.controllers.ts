@@ -4,6 +4,7 @@ import {
     deleteReviewService,
     getAverageRatingByProductService,
     getReviewsByProductService,
+    getReviewsByUserService,
     updateReviewService
 } from '../services/review.service'
 
@@ -87,13 +88,37 @@ export const getReviewsByProduct = async (
     }
 }
 
+export const getReviewsByUser = async (
+    req: Request,
+    res: Response
+): Promise<void> => {
+    try {
+        const userId = Number(req.params.userId)
+        const sort = req.query.sort as string
+
+        const reviews = await getReviewsByUserService(userId, sort)
+
+        res.status(200).json(reviews)
+        return
+    } catch (error: any) {
+        if (error.message === 'UserId is required') {
+            res.status(400).json({ message: error.message })
+            return
+        }
+
+        console.error('Get user reviews error:', error)
+        res.status(500).json({ message: 'Failed to fetch user reviews' })
+        return
+    }
+}
+
 export const updateReview = async (
     req: Request,
     res: Response
 ): Promise<void> => {
     try {
         const userId = req.user?.id
-        const id = req.params.id
+        const id = req.params.id as string
         const { rating, comment } = req.body
 
         if (!userId) {
@@ -106,12 +131,20 @@ export const updateReview = async (
             return
         }
 
-        const review = await updateReviewService({
+        const updatePayload: any = {
             reviewId: id,
-            userId,
-            rating: rating !== undefined ? Number(rating) : undefined,
-            comment
-        })
+            userId
+        }
+
+        if (rating !== undefined) {
+            updatePayload.rating = Number(rating)
+        }
+
+        if (comment !== undefined) {
+            updatePayload.comment = comment
+        }
+
+        const review = await updateReviewService(updatePayload)
 
         res.status(200).json({
             message: 'Review updated successfully',
@@ -149,7 +182,7 @@ export const deleteReview = async (
 ): Promise<void> => {
     try {
         const userId = req.user?.id
-        const id = req.params.id
+        const id = req.params.id as string
 
         if (!userId) {
             res.status(401).json({ message: 'Unauthorized' })

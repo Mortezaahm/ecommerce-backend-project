@@ -1,6 +1,6 @@
 import ReviewModel from '../models/mongodb/review.model'
 import { findUserById } from '../models/mysql/user.model'
-import { getProductById} from '../models/mysql/product.model'
+import { getProductById } from '../models/mysql/product.model'
 
 interface CreateReviewInput {
     userId: number
@@ -80,6 +80,34 @@ export const getReviewsByProductService = async (
     }
 
     return await ReviewModel.find({ productId }).sort(sortOption)
+}
+
+export const getReviewsByUserService = async (
+    userId: number,
+    sort?: string
+) => {
+    if (!userId) {
+        throw new Error('UserId is required')
+    }
+
+    let sortOption: any = { createdAt: -1 }
+
+    switch (sort) {
+        case 'highest':
+            sortOption = { rating: -1 }
+            break
+        case 'lowest':
+            sortOption = { rating: 1 }
+            break
+        case 'oldest':
+            sortOption = { createdAt: 1 }
+            break
+        case 'newest':
+        default:
+            sortOption = { createdAt: -1 }
+    }
+
+    return await ReviewModel.find({ userId }).sort(sortOption)
 }
 
 export const updateReviewService = async ({
