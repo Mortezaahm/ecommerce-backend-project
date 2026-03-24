@@ -7,7 +7,10 @@ import categoryRoutes from "./routes/category.routes";
 import cartRoutes from "./routes/cart.routes";           // Cart endpoints
 import cartItemRoutes from "./routes/cartItem.routes";   // CartItem endpoints
 
+import reviewRoutes from "./routes/review.routes";
+
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 
@@ -20,17 +23,18 @@ app.use("/api/categories", categoryRoutes);
 app.use("/api/cart", cartRoutes);           // endpoints för Cart
 app.use("/api/cart/items", cartItemRoutes); // endpoints för CartItem
 
+app.use("/api/reviews", reviewRoutes);
+
 // Health check
 app.get("/health", (req,res) =>{
     res.json({
-        status: "OK",
-        message:"BackEnd working"
-    });
-});
+        status: 'OK',
+        message: 'BackEnd working'
+    })
+})
 
-// Root
-app.get("/",(req,res) =>{
-    res.send("Backend API is running!!!");
-});
+app.get('/', (req, res) => {
+    res.send('Backend API is running!!!')
+})
 
-export default app;
+export default app
