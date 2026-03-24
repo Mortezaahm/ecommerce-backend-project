@@ -87,7 +87,7 @@ export const getProductByIdWithCategory = async (id: number) => {
       p.info,
       p.price,
       c.category_id AS c_id,
-      c.title AS c_name
+      c.title AS c_title
     FROM products p
     LEFT JOIN categories c
       ON p.category_id = c.category_id
