@@ -1,4 +1,6 @@
 import express from "express";
+import cors from "cors";
+
 import authRoutes from "./routes/auth.routes";
 import productRoutes from "./routes/product.routes";
 import categoryRoutes from "./routes/category.routes";
@@ -6,12 +8,12 @@ import cartRoutes from "./routes/cart.routes";           // Cart endpoints
 import cartItemRoutes from "./routes/cartItem.routes";   // CartItem endpoints
 
 const app = express();
-
+app.use(cors());
 app.use(express.json());
 
 // Auth, Products, Categories
-app.use("/api/auth", authRoutes);
-app.use("/api/products", productRoutes);
+app.use("/api/auth", authRoutes); // login and register include update and delete user
+app.use("/api/products", productRoutes); // routes for product whole CRUD
 app.use("/api/categories", categoryRoutes);
 
 // Cart & CartItems
