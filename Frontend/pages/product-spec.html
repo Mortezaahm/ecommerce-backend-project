@@ -34,6 +34,24 @@ HTML-kommentar: Strukturöversikt
             <div id="productDetail" class="product-detail">
                 <p>Laddar produkt...</p>
             </div>
+            <div id="reviewsContainer"></div>
+            <div id="reviewFormContainer">
+                <h3>Skriv en review</h3>
+
+                <select id="rating">
+                    <option value="5">★★★★★</option>
+                    <option value="4">★★★★☆</option>
+                    <option value="3">★★★☆☆</option>
+                    <option value="2">★★☆☆☆</option>
+                    <option value="1">★☆☆☆☆</option>
+                </select>
+
+                <textarea
+                    id="comment"
+                    placeholder="Skriv din review"
+                ></textarea>
+                <button id="submitReview">Skicka</button>
+            </div>
             <div id="cartToast" class="cart-toast"></div>
         </main>
 

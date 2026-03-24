@@ -23,20 +23,25 @@ form.addEventListener("submit", async (e) => {
     }
 
     const token = data.data?.token;
-    const user = data.data?.user;
 
-    if (!token || !user?.id) {
+    // support both response formats
+    const user = data.data?.user;
+    const userId = user?.id || data.data?.userId;
+    const name = user?.name || "";
+    const role = user?.role || "user";
+
+    if (!token || !userId) {
       throw new Error("Ogiltigt svar från servern.");
     }
 
+    // Save to localStorage
     localStorage.setItem("token", token);
-    localStorage.setItem("userId", user.id);
-    localStorage.setItem("name", user.name || "");
-    localStorage.setItem("role", user.role || "");
+    localStorage.setItem("userId", userId);
+    localStorage.setItem("name", name || ""); // Save name if available
+    localStorage.setItem("role", role || "");
 
-    alert("Inloggning lyckades!");
-
-    if (user.role === "admin") {
+    // Redirect based on role
+    if (role === "admin") {
       window.location.href = "../pages/admin.html";
     } else {
       window.location.href = "../pages/member.html";
