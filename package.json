@@ -1,0 +1,33 @@
+{
+  "name": "ecommerce-backend-project",
+  "version": "1.0.0",
+  "description": "Tech stack",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mortezaahm/ecommerce-backend-project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Mortezaahm/ecommerce-backend-project/issues"
+  },
+  "homepage": "https://github.com/Mortezaahm/ecommerce-backend-project#readme",
+  "dependencies": {
+    "@types/express": "^5.0.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "mongoose": "^9.3.2",
+    "npx": "^10.2.2",
+    "tsc": "^2.0.4",
+    "typescript": "^6.0.2"
+  },
+  "devDependencies": {
+    "tsx": "^4.21.0"
+  }
+}

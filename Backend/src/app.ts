@@ -1,23 +1,22 @@
-import express from "express";
-// import authRoutes from "./routes/auth.routes";
-// import productRoutes from "./routes/product.routes";
+import express from 'express'
+import reviewRoutes from './routes/review.routes'
+import cors from 'cors'
 
-const app = express();
+const app = express()
+app.use(cors())
+app.use(express.json())
 
-app.use(express.json());
+app.use('/reviews', reviewRoutes)
 
-// app.use("/api/auth", authRoutes);
-//app.use("/api/products", productRoutes);
-
-app.get("/health", (req,res) =>{
+app.get('/health', (req, res) => {
     res.json({
-        status: "OK",
-        message:"BackEnd working"
+        status: 'OK',
+        message: 'BackEnd working'
     })
 })
 
-app.get("/",(req,res) =>{
-    res.send("Backend API is running!!!");
+app.get('/', (req, res) => {
+    res.send('Backend API is running!!!')
 })
 
-export default app;
+export default app
