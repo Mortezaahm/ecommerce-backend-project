@@ -1,4 +1,4 @@
-// Backend/src/services/cart.service.ts
+// logic for cart
 import {
   getCartByUserId as getCartFromDB,
   createCart as createCartInDB,
