@@ -11,7 +11,10 @@ form.addEventListener('submit', async (e) => {
 
     // Rensa eventuell tidigare feltext
     const errorBox = document.getElementById('login-error')
-    if (errorBox) errorBox.textContent = ''
+    if (errorBox) {
+        errorBox.textContent = ''
+        errorBox.style.color = '#111'
+    }
 
     try {
         // Skicka login-förfrågan till backend
@@ -59,6 +62,7 @@ form.addEventListener('submit', async (e) => {
         // Visa felmeddelande på sidan om möjligt
         if (errorBox) {
             errorBox.textContent = error.message
+            errorBox.style.color = '#111'
         } else {
             alert(error.message)
         }

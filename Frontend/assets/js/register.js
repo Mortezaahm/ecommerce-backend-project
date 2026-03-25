@@ -13,7 +13,10 @@ form.addEventListener('submit', async (e) => {
 
     // Rensa tidigare felmeddelanden
     const errorBox = document.getElementById('register-error')
-    if (errorBox) errorBox.textContent = ''
+    if (errorBox) {
+        errorBox.textContent = ''
+        errorBox.style.color = '#111'
+    }
 
     try {
         // Validera e-post
@@ -68,6 +71,7 @@ form.addEventListener('submit', async (e) => {
         // Visa felmeddelande
         if (errorBox) {
             errorBox.textContent = error.message
+            errorBox.style.color = '#111'
         }
     }
 })
