@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (isLoggedIn) {
         if (accountMainLink) {
             accountMainLink.textContent = 'Min sida'
-            accountMainLink.href = '/Frontend/pages/member.html'
+            accountMainLink.href = '/pages/member.html'
         }
 
         if (registerRow) {
@@ -47,11 +47,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (ordersLink) {
-            ordersLink.href = '/Frontend/pages/member.html#bestallningar'
+            ordersLink.href = '/pages/member.html#bestallningar'
         }
 
         if (reviewsLink) {
-            reviewsLink.href = '/Frontend/pages/member.html#recensioner'
+            reviewsLink.href = '/pages/member.html#recensioner'
         }
 
         if (accountDropdown && name) {
@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         if (accountMainLink) {
             accountMainLink.textContent = 'Logga in'
-            accountMainLink.href = '/Frontend/pages/login.html'
+            accountMainLink.href = '/pages/login.html'
         }
 
         if (registerRow) {
@@ -72,11 +72,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (ordersLink) {
-            ordersLink.href = '/Frontend/pages/login.html'
+            ordersLink.href = '/pages/login.html'
         }
 
         if (reviewsLink) {
-            reviewsLink.href = '/Frontend/pages/login.html'
+            reviewsLink.href = '/pages/login.html'
         }
     }
 
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.removeItem('userId')
             localStorage.removeItem('name')
 
-            window.location.href = '/Frontend/pages/login.html'
+            window.location.href = '/pages/login.html'
         })
     }
 })

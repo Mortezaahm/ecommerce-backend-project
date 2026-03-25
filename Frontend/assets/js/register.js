@@ -22,7 +22,7 @@ form.addEventListener('submit', async (e) => {
         }
 
         const response = await fetch(
-            'http://localhost:3000/api/auth/register',
+            '/api/auth/register',
             {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -44,7 +44,7 @@ form.addEventListener('submit', async (e) => {
         localStorage.setItem('token', data.token)
         localStorage.setItem('userId', data.userId)
 
-        const meResponse = await fetch('http://localhost:3000/api/auth/me', {
+        const meResponse = await fetch('/api/auth/me', {
             headers: {
                 Authorization: `Bearer ${data.token}`
             }

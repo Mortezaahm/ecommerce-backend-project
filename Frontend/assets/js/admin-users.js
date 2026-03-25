@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // fetch users and populate table
   async function fetchUsers() {
     try {
-      const res = await fetch("http://localhost:3000/api/users", {
+      const res = await fetch("/api/users", {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const newRole = e.target.value;
 
         try {
-          const res = await fetch(`http://localhost:3000/api/users/${userId}`, {
+          const res = await fetch(`/api/users/${userId}`, {
             method: "PUT",
             headers: {
               "Content-Type": "application/json",
@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (!confirm("Are you sure you want to delete this user?")) return;
 
         try {
-          const res = await fetch(`http://localhost:3000/api/users/${userId}`, {
+          const res = await fetch(`/api/users/${userId}`, {
             method: "DELETE",
             headers: {
               Authorization: `Bearer ${token}`,

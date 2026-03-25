@@ -128,7 +128,7 @@ function renderCartPage() {
             <div class="cart-empty">
                 <h3>Din kundvagn är tom</h3>
                 <p>Lägg till några produkter för att komma igång.</p>
-                <a href="/Frontend/pages/products.html" class="btn btn-dark">
+                <a href="/pages/products.html" class="btn btn-dark">
                     Visa produkter
                 </a>
             </div>

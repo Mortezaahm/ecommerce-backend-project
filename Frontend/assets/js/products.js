@@ -4,7 +4,7 @@ const sortToggle = document.getElementById('sortToggle')
 const sortPanel = document.getElementById('sortPanel')
 const sortOptions = document.querySelectorAll('.sort-option')
 
-const API_BASE = 'http://localhost:3000'
+const API_BASE = ''
 
 let allProducts = []
 let allRatings = {}

@@ -1,7 +1,7 @@
 const memberName = document.getElementById('member-name')
 const reviewsContainer = document.getElementById('member-reviews')
 const ordersContainer = document.getElementById('member-orders')
-const API_BASE = 'http://localhost:3000'
+const API_BASE = ''
 
 // ====== Auth helpers ======
 function getToken() {

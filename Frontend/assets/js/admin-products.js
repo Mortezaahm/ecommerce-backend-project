@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // function to fetch the list of products
   async function fetchProducts() {
     try {
-      const res = await fetch("http://localhost:3000/api/products", {
+      const res = await fetch("/api/products", {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         ).value;
 
         try {
-          const res = await fetch(`http://localhost:3000/api/products/${id}`, {
+          const res = await fetch(`/api/products/${id}`, {
             method: "PUT",
             headers: {
               "Content-Type": "application/json",
@@ -100,7 +100,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (!confirm("Are you sure you want to delete this product?")) return;
 
         try {
-          const res = await fetch(`http://localhost:3000/api/products/${id}`, {
+          const res = await fetch(`/api/products/${id}`, {
             method: "DELETE",
             headers: { Authorization: `Bearer ${token}` },
           });
@@ -124,7 +124,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const category = document.getElementById("category").value;
 
     try {
-      const res = await fetch("http://localhost:3000/api/products", {
+      const res = await fetch("/api/products", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -2,7 +2,7 @@ const productDetail = document.getElementById('productDetail')
 const backButton = document.getElementById('backButton')
 const reviewsContainer = document.getElementById('reviewsContainer')
 const reviewFormContainer = document.getElementById('reviewFormContainer')
-const API_BASE = 'http://localhost:3000'
+const API_BASE = ''
 
 backButton?.addEventListener('click', () => {
     window.location.href = './products.html'
@@ -271,7 +271,7 @@ function toggleReviewFormVisibility() {
     if (!isLoggedIn()) {
         reviewFormContainer.innerHTML = `
             <p class="login-warning">
-                Du måste <a href="/Frontend/pages/login.html">logga in</a> för att skriva en review.
+                Du måste <a href="/pages/login.html">logga in</a> för att skriva en review.
             </p>
         `
     } else {
