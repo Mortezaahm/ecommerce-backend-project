@@ -1,17 +1,19 @@
 // logic for cart
+import { getCartByUserId as getCartFromDB, createCart as createCartInDB } from "../models/mysql/cart.model";
+
 import {
-  getCartByUserId as getCartFromDB,
-  createCart as createCartInDB,
-  addCartItem as addCartItemInDB,
-  updateCartItemQuantity as updateCartItemQuantityInDB,
-  removeCartItem as removeCartItemInDB
-} from "../models/mysql/cart.model";
-import type { CartItem } from "../models/mysql/cart.model";
+  createCartItem as addCartItemInDB,
+  updateCartItem as updateCartItemQuantityInDB,
+  deleteCartItem as removeCartItemInDB,
+  getCartItemsByCartId as getCartItemsFromDB
+} from "../models/mysql/cartitem.model";
+
+import type { CartItem } from "../models/mysql/cartitem.model";
 
 // Get all cart items for a user
 export const getCartService = async (userId: number): Promise<CartItem[]> => {
     if (!userId || userId <= 0) throw new Error("Invalid user id");
-    return await getCartFromDB(userId);
+    return await getCartItemsFromDB(userId);
 }
 
 // Create a new cart for a user
