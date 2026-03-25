@@ -1,33 +1,66 @@
 // user model mysql
 import pool from "../../config/mysql";
-export interface User {
-    id?: number,
+import type { ResultSetHeader, RowDataPacket } from "mysql2";
+
+// Define correct types for CRUD functions
+// 1) Interface for full data from DB - Type for DB
+export interface DBUser extends RowDataPacket {
+    id: number,
     name: string,
     email: string,
     password: string,
-    role?: "user" | "admin"
+    address?: string | null,
+    phone?: string | null,
+    role: "user" | "admin"
 }
 
-// insert into database users in mysql
-export const createUser = async (user: User) => {
-  const { name, email, password, role } = user;
+// 2) Separate type for just Creating User Input and delete "any" - Type for Create
+export type CreateUserInput = {
+  name: string,
+  email: string,
+  password: string,
+  address?: string | null,
+  phone?: string | null,
+  role: "user" | "admin"
+}
 
-  const [result]: any = await pool.execute(
+// 3) define a type for just find user by id and delete "any" in function - Type for get by id
+export interface SafeUser extends RowDataPacket {
+  id: number,
+  name: string,
+  email: string,
+  role: "user" | "admin"
+}
+
+// 4) define a type for update
+export interface UpdateUserInput {
+  name: string,
+  email: string,
+  role: "user" | "admin"
+}
+
+
+// CRUD => Create , GET + GET by ID, Update , and DELETE
+// 1) insert into database users in mysql Create USER
+export const createUser = async (user: CreateUserInput) => {
+  const { name, email, password, address, phone, role } = user;
+
+  const [result] = await pool.execute<ResultSetHeader> (
     `
-    INSERT INTO users (name, email, password, role)
-    VALUES (?, ?, ?, ?)
+    INSERT INTO users (name, email, password, address, phone, role)
+    VALUES (?, ?, ?, ?, ?, ?)
     `,
-    [name, email, password, role || "user"]
+    [name, email, password, address ?? null, phone ?? null, role || "user"]
   );
 
   return result.insertId;
 };
 
-// find user by email
+// 2) Get = find user by email
 export const findUserByEmail = async (email: string) => {
-  const [rows]: any = await pool.execute(
+  const [rows] = await pool.execute<DBUser[]>(
     `
-    SELECT * FROM users
+    SELECT id, name, email, password, role FROM users
     WHERE email = ?
     `,
     [email]
@@ -36,9 +69,9 @@ export const findUserByEmail = async (email: string) => {
   return rows[0];
 };
 
-// find user by id
-export const findUserById = async (id: number) => {
-  const [rows]: any = await pool.execute(
+// 3) Get by ID = find user by id
+export const findUserById = async (id: number):Promise<SafeUser | undefined> => {
+  const [rows] = await pool.execute<SafeUser[]>(
     `
     SELECT id, name, email, role
     FROM users
@@ -49,3 +82,29 @@ export const findUserById = async (id: number) => {
 
   return rows[0];
 };
+
+// 4) Update User
+export const updateUser = async (id:number, user:UpdateUserInput): Promise<boolean> => {
+  const { name, email, role } = user;
+
+  const [result] = await pool.execute<ResultSetHeader>(
+    `
+    UPDATE users
+    SET name = ?, email = ?, role = ?
+    WHERE id = ?
+    `,
+    [name, email, role, id]
+  );
+  return result.affectedRows > 0;
+}
+
+// 5) Delete User
+export const deleteUser = async (id:number):Promise<boolean> => {
+  const [result] = await pool.execute<ResultSetHeader>(
+    `
+    DELETE FROM users WHERE id = ?
+    ` ,
+    [id]
+  );
+  return result.affectedRows > 0;
+}
