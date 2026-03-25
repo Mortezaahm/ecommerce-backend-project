@@ -22,7 +22,9 @@ json
 {
 "name": "John Doe",
 "email": "john@email.com",
+"confirmEmail": "john@email.com",
 "password": "123456"
+"confirmPassword": "123456"
 }
 
 ### Response (201)
@@ -126,9 +128,9 @@ json
 "message": "BackEnd working"
 }
 
-=========****\*\*\*****==========
-=========****\*\*\*****==========
-=========****\*\*\*****==========
+=========\***\*\*\*\*\*\***==========
+=========\***\*\*\*\*\*\***==========
+=========\***\*\*\*\*\*\***==========
 
 // Det kommer sen
 Products API
