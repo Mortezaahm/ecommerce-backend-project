@@ -35,14 +35,14 @@ function initProductPage() {
     }
 }
 
-// ======== LOAD PRODUCT ========
 async function loadSingleProduct() {
     try {
         const res = await fetch(`${API_BASE}/api/products/${productId}`)
         const product = await res.json()
 
-        const ratingData = await loadAverageRating()
+        product.price = Number(product.price) || 0
 
+        const ratingData = await loadAverageRating()
         renderProduct(product, ratingData)
     } catch (err) {
         console.error(err)
@@ -54,7 +54,7 @@ function renderProduct(product, ratingData) {
     productDetail.innerHTML = `
         <div class="product-detail-card">
             <div class="product-detail-image">
-                <img src="https://via.placeholder.com/400x400?text=No+Image" alt="${product.title}">
+                <img src="${product.image || 'https://via.placeholder.com/400x400?text=No+Image'}" alt="${product.title}">
             </div>
 
             <div class="product-detail-info">
@@ -133,7 +133,7 @@ async function loadReviews() {
 function renderReviews(reviews) {
     const userId = getUserIdFromToken()
 
-    if (!reviews.length) {
+    if (!reviews?.length) {
         reviewsContainer.innerHTML = `
             <div class="reviews-section">
                 <h3>Reviews</h3>
@@ -177,7 +177,7 @@ async function submitReview() {
     const commentEl = document.getElementById('comment')
     if (!ratingEl || !commentEl) return
 
-    const rating = ratingEl.value
+    const rating = Number(ratingEl.value)
     const comment = commentEl.value
 
     try {
@@ -230,13 +230,16 @@ async function loadAverageRating() {
         const res = await fetch(
             `${API_BASE}/api/reviews/product/${productId}/average`
         )
-        return await res.json()
+        const data = await res.json()
+        return {
+            averageRating: Number(data.averageRating) || 0,
+            totalReviews: Number(data.totalReviews) || 0
+        }
     } catch {
         return { averageRating: 0, totalReviews: 0 }
     }
 }
 
-// ======== HELPER FUNCTIONS ========
 function renderStars(rating) {
     let stars = ''
     for (let i = 1; i <= 5; i++) stars += i <= rating ? '★' : '☆'
@@ -274,6 +277,5 @@ function toggleReviewFormVisibility() {
                 Du måste <a href="/pages/login.html">logga in</a> för att skriva en review.
             </p>
         `
-    } else {
     }
 }

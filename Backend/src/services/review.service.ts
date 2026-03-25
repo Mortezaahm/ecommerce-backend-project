@@ -1,7 +1,10 @@
 import ReviewModel from '../models/mongodb/review.model'
 import { findUserById } from '../models/mysql/user.model'
 import { getProductById } from '../models/mysql/product.model'
-import type { CreateReviewInput, UpdateReviewInput } from '../models/mongodb/review.model'
+import type {
+    CreateReviewInput,
+    UpdateReviewInput
+} from '../models/mongodb/review.model'
 
 export const createReviewService = async ({
     userId,
@@ -98,4 +101,29 @@ export const getAverageRatingByProductService = async (productId: number) => {
         averageRating: Number(result[0].averageRating.toFixed(1)),
         totalReviews: result[0].totalReviews
     }
+}
+export const getAverageRatingAllProductsService = async () => {
+    const result = await ReviewModel.aggregate([
+        {
+            $group: {
+                _id: '$productId',
+                averageRating: { $avg: '$rating' },
+                totalReviews: { $sum: 1 }
+            }
+        }
+    ])
+
+    if (!result.length) return {}
+
+    const ratings: Record<
+        string,
+        { averageRating: number; totalReviews: number }
+    > = {}
+    result.forEach((r) => {
+        ratings[r._id] = {
+            averageRating: Number(r.averageRating.toFixed(1)),
+            totalReviews: r.totalReviews
+        }
+    })
+    return ratings
 }

@@ -3,6 +3,7 @@ import {
     createReview,
     deleteReview,
     getAverageRatingByProduct,
+    getAverageRatingAllProducts,
     getReviewsByProduct,
     getReviewsByUser,
     updateReview
@@ -17,5 +18,6 @@ router.get('/user/:userId', authMiddleware, getReviewsByUser)
 router.post('/', authMiddleware, createReview)
 router.put('/:id', authMiddleware, updateReview)
 router.delete('/:id', authMiddleware, deleteReview)
+router.get('/average/all', getAverageRatingAllProducts)
 
 export default router

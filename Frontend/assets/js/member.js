@@ -1,7 +1,7 @@
 const memberName = document.getElementById('member-name')
 const reviewsContainer = document.getElementById('member-reviews')
 const ordersContainer = document.getElementById('member-orders')
-const API_BASE = ''
+const API_BASE = 'http://localhost:3000'
 
 // ====== Auth helpers ======
 function getToken() {
@@ -189,7 +189,6 @@ function setupReviewActions() {
                 loadMemberPage()
             } catch (err) {
                 console.error(err)
-
             }
         })
     })
