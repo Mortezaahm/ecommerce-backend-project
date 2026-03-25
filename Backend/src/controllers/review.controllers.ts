@@ -3,6 +3,7 @@ import {
     createReviewService,
     deleteReviewService,
     getAverageRatingByProductService,
+    getAverageRatingAllProductsService,
     getReviewsByProductService,
     getReviewsByUserService,
     updateReviewService
@@ -101,5 +102,15 @@ export const getAverageRatingByProduct = async (
     } catch (error: any) {
         console.error('Average rating error:', error)
         res.status(500).json({ message: 'Failed to fetch average rating' })
+    }
+}
+
+export const getAverageRatingAllProducts = async (req: Request, res: Response) => {
+    try {
+        const result = await getAverageRatingAllProductsService()
+        res.status(200).json(result)
+    } catch (error: any) {
+        console.error('Average rating all products error:', error)
+        res.status(500).json({ message: 'Failed to fetch average ratings' })
     }
 }
