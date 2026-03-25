@@ -54,7 +54,7 @@ async function loadCategories() {
             button.className = 'category-btn'
             button.textContent = category.title
             button.addEventListener('click', () => {
-                selectedCategory = category.title
+                selectedCategory = category.category_id
                 updateActiveCategoryButton(button)
                 filterAndRenderProducts()
             })
@@ -78,7 +78,6 @@ async function loadProducts() {
         const res = await fetch(`${API_BASE}/api/products`)
         allProducts = await res.json()
 
-        // Konvertera price till number för alla produkter
         allProducts = allProducts.map((product) => ({
             ...product,
             price: Number(product.price) || 0
@@ -96,8 +95,6 @@ async function loadAllRatings() {
     try {
         const res = await fetch(`${API_BASE}/api/reviews/average/all`)
         const data = await res.json()
-
-        // Om response inte är en array/object fallback
         allRatings = data || {}
     } catch (err) {
         console.error('Kunde inte hämta reviews', err)
@@ -110,7 +107,7 @@ function filterAndRenderProducts() {
 
     if (selectedCategory) {
         filteredProducts = filteredProducts.filter(
-            (product) => product.category?.title === selectedCategory
+            (product) => product.category_id === selectedCategory
         )
     }
 

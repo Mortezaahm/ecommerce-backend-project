@@ -1,3 +1,4 @@
+
 function getCart() {
     return JSON.parse(localStorage.getItem('cart')) || []
 }
@@ -21,28 +22,7 @@ function getCartTotal() {
     )
 }
 
-function normalizeCart() {
-    const cart = getCart()
-    let changed = false
-
-    const newCart = cart.map((item, index) => {
-        if (!item.id) {
-            changed = true
-            return {
-                ...item,
-                id: String(item.product_id ?? `old-${index}`),
-                quantity: Number(item.quantity || 1),
-                price: Number(item.price || 0),
-                title: item.title || 'Produkt',
-                image: item.image || 'https://via.placeholder.com/150'
-            }
-        }
-        return item
-    })
-
-    if (changed) saveCart(newCart)
-}
-
+// ======== CART ACTIONS ========
 function addToCart(product, quantity = 1) {
     const cart = getCart()
     const id = String(product.id ?? product.product_id)
@@ -109,20 +89,20 @@ function renderNavbarCart() {
     container.innerHTML = cart
         .map(
             (item) => `
-    <div class="cart-item d-flex align-items-start gap-3 mb-3" data-id="${item.id}">
-      <img src="${item.image}" alt="${item.title}" class="cart-item-img"/>
-      <div class="flex-grow-1">
-        <div class="fw-semibold">${item.title}</div>
-        <div class="small">${formatPrice(item.price)}</div>
-        <div class="cart-controls mt-2">
-          <button class="qty-btn minus" data-id="${item.id}">−</button>
-          <span class="qty-value">${item.quantity}</span>
-          <button class="qty-btn plus" data-id="${item.id}">+</button>
-          <button class="remove-btn" data-id="${item.id}">Ta bort</button>
+        <div class="cart-item d-flex align-items-start gap-3 mb-3" data-id="${item.id}">
+            <img src="${item.image}" alt="${item.title}" class="cart-item-img"/>
+            <div class="flex-grow-1">
+                <div class="fw-semibold">${item.title}</div>
+                <div class="small">${formatPrice(item.price)}</div>
+                <div class="cart-controls mt-2">
+                    <button class="qty-btn minus" data-id="${item.id}">−</button>
+                    <span class="qty-value">${item.quantity}</span>
+                    <button class="qty-btn plus" data-id="${item.id}">+</button>
+                    <button class="remove-btn" data-id="${item.id}">Ta bort</button>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  `
+    `
         )
         .join('')
 
@@ -141,53 +121,35 @@ function renderCartPage() {
 
     if (!cart.length) {
         itemsEl.innerHTML = `
-      <div class="cart-empty">
-        <h3>Din kundvagn är tom</h3>
-        <p>Lägg till några produkter för att komma igång.</p>
-        <a href="/pages/products.html" class="btn btn-dark">Visa produkter</a>
-      </div>
-    `
+            <div class="cart-empty">
+                <h3>Din kundvagn är tom</h3>
+                <p>Lägg till några produkter för att komma igång.</p>
+                <a href="/pages/products.html" class="btn btn-dark">Visa produkter</a>
+            </div>
+        `
         return
     }
 
     itemsEl.innerHTML = cart
         .map(
             (item) => `
-    <div class="cart-page-item" data-id="${item.id}">
-      <img src="${item.image}" alt="${item.title}" class="cart-page-img"/>
-      <div class="cart-page-info">
-        <h3>${item.title}</h3>
-        <div class="cart-page-price">Pris: ${formatPrice(item.price)}</div>
-        <div class="cart-controls">
-          <button class="qty-btn minus" data-id="${item.id}">−</button>
-          <span class="qty-value">${item.quantity}</span>
-          <button class="qty-btn plus" data-id="${item.id}">+</button>
-          <button class="remove-btn" data-id="${item.id}">Ta bort</button>
+        <div class="cart-page-item" data-id="${item.id}">
+            <img src="${item.image}" alt="${item.title}" class="cart-page-img"/>
+            <div class="cart-page-info">
+                <h3>${item.title}</h3>
+                <div class="cart-page-price">Pris: ${formatPrice(item.price)}</div>
+                <div class="cart-controls">
+                    <button class="qty-btn minus" data-id="${item.id}">−</button>
+                    <span class="qty-value">${item.quantity}</span>
+                    <button class="qty-btn plus" data-id="${item.id}">+</button>
+                    <button class="remove-btn" data-id="${item.id}">Ta bort</button>
+                </div>
+            </div>
+            <div class="cart-page-subtotal">${formatPrice(item.price * item.quantity)}</div>
         </div>
-      </div>
-      <div class="cart-page-subtotal">${formatPrice(item.price * item.quantity)}</div>
-    </div>
-  `
+    `
         )
         .join('')
-}
-
-function handleCartClick(e) {
-    const button = e.target.closest('.qty-btn, .remove-btn')
-    if (!button) return
-    const productId = button.dataset.id
-    if (!productId) return
-
-    const cartItem = getCart().find((p) => p.id === productId)
-    if (!cartItem) return
-
-    if (button.classList.contains('plus')) {
-        updateQuantity(productId, cartItem.quantity + 1)
-    } else if (button.classList.contains('minus')) {
-        updateQuantity(productId, cartItem.quantity - 1)
-    } else if (button.classList.contains('remove-btn')) {
-        removeFromCart(productId)
-    }
 }
 
 let cartEventsInitialized = false
@@ -195,15 +157,22 @@ function setupCartEvents() {
     if (cartEventsInitialized) return
     cartEventsInitialized = true
 
-    const cartDropdown = document.querySelector('.cart-dropdown')
-    if (cartDropdown) {
-        cartDropdown.addEventListener('click', handleCartClick)
-    }
+    document.addEventListener('click', function (e) {
+        const target = e.target
+        if (!(target instanceof HTMLElement)) return
+        const productId = target.dataset.id
+        if (!productId) return
 
-    const cartPage = document.querySelector('.cart-page-items')
-    if (cartPage) {
-        cartPage.addEventListener('click', handleCartClick)
-    }
+        const cart = getCart()
+        const item = cart.find((p) => p.id === productId)
+        if (!item) return
+
+        if (target.classList.contains('plus'))
+            updateQuantity(productId, item.quantity + 1)
+        if (target.classList.contains('minus'))
+            updateQuantity(productId, item.quantity - 1)
+        if (target.classList.contains('remove-btn')) removeFromCart(productId)
+    })
 }
 
 function refreshCartUI() {
@@ -221,13 +190,10 @@ function showCartToast(message = 'Produkten lades till i kundvagnen') {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    normalizeCart()
     setupCartEvents()
     refreshCartUI()
 })
-
 document.addEventListener('componentsLoaded', () => {
-    normalizeCart()
     setupCartEvents()
     refreshCartUI()
 })
