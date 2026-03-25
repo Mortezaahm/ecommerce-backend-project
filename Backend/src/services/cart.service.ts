@@ -12,6 +12,7 @@ import type { CartItem } from "../models/mysql/cartitem.model";
 // Get all cart items for a user
 export const getCartService = async (userId: number): Promise<CartItem[]> => {
     if (!userId || userId <= 0) throw new Error("Invalid user id");
+    // return await getCartItemsFromDB(userId);
     const cart = await getCartFromDB(userId);
     if (!cart) return []; // No cart found, return empty array
 
