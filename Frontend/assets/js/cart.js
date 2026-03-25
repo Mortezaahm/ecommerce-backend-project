@@ -1,3 +1,4 @@
+// ======== CART HELPERS ========
 function getCart() {
     return JSON.parse(localStorage.getItem('cart')) || []
 }
@@ -67,6 +68,7 @@ function updateQuantity(productId, newQuantity) {
     refreshCartUI()
 }
 
+// ======== RENDER ========
 function renderCartBadge() {
     const badge = document.querySelector('.cart-btn-badge')
     if (!badge) return
@@ -151,12 +153,13 @@ function renderCartPage() {
         .join('')
 }
 
+// ======== EVENTS ========
 let cartEventsInitialized = false
 function setupCartEvents() {
     if (cartEventsInitialized) return
     cartEventsInitialized = true
 
-    document.addEventListener('click', function (e) {
+    document.addEventListener('click', (e) => {
         const target = e.target
         if (!(target instanceof HTMLElement)) return
         const productId = target.dataset.id
@@ -188,76 +191,88 @@ function showCartToast(message = 'Produkten lades till i kundvagnen') {
     setTimeout(() => toast.classList.remove('show'), 2500)
 }
 
+// ======== PLACE ORDER ========
 async function placeOrder() {
     const cart = getCart()
-    if (!cart.length) return
+    if (!cart.length) return alert('Din kundvagn är tom')
 
     try {
         const token = localStorage.getItem('token')
+        if (!token) throw new Error('Ingen användare inloggad')
 
-        // 1. Hämta user
+        // Hämta user
         const userRes = await fetch('http://localhost:3000/api/auth/me', {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
+            headers: { Authorization: `Bearer ${token}` }
         })
-
         const userData = await userRes.json()
         const user = userData.user || userData.data?.user
+        if (!user) throw new Error('Kunde inte hämta användare')
 
-        // 2. Skapa order
+        // Skapa order
         const total = getCartTotal()
-
         const orderRes = await fetch('http://localhost:3000/api/orders', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`
             },
-            body: JSON.stringify({
-                user_id: user.id,
-                total_price: total
-            })
+            body: JSON.stringify({ userId: user.id, totalPrice: total })
         })
 
-        const newOrder = await orderRes.json()
+        console.log('Order response status:', orderRes.status)
+        const text = await orderRes.text()
+        console.log('Order response body raw:', text)
 
-        // ⚠️ viktigt: kolla vad din backend returnerar
-        const orderId = newOrder.id || newOrder.insertId
+        let newOrder
+        try {
+            newOrder = JSON.parse(text)
+        } catch (err) {
+            console.error('Kunde inte parsa JSON från backend:', err)
+            throw new Error('Order skapades inte! Backend skickade inte JSON')
+        }
 
-        // 3. Skapa order items
+        console.log('New order from backend:', newOrder)
+        const orderId = newOrder.orderId || newOrder.insertId || newOrder.id
+        if (!orderId) throw new Error('Order skapades inte!')
+
+        // Skapa order items
         for (const item of cart) {
-            await fetch('http://localhost:3000/api/orders/item', {
+            const res = await fetch('http://localhost:3000/api/order-items', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
                 },
                 body: JSON.stringify({
-                    order_id: orderId,
-                    product_id: item.id,
+                    order_id: Number(orderId),
+                    order__id: Number(orderId),
+                    product_id: Number(item.id),
+                    product__id: Number(item.id),
                     quantity: item.quantity,
                     price_at_order: item.price
                 })
             })
+            if (!res.ok) {
+                const errText = await res.text()
+                console.error('Order item error:', errText)
+                throw new Error('Order item kunde inte skapas: ' + errText)
+            }
         }
 
-        // 4. Töm cart
         localStorage.removeItem('cart')
-
-        // 5. Redirect
+        refreshCartUI()
         window.location.href = '/pages/member.html'
     } catch (err) {
-        console.error(err)
+        console.error('placeOrder error:', err)
+        alert(err.message || 'Kunde inte lägga order. Kolla konsolen.')
     }
 }
 
+// ======== INIT ========
 document.addEventListener('DOMContentLoaded', () => {
     const btn = document.getElementById('place-order-btn')
-    if (btn) {
-        btn.addEventListener('click', placeOrder)
-    }
-})
+    if (btn) btn.addEventListener('click', placeOrder)
 
-document.addEventListener('DOMContentLoaded', () => {
     setupCartEvents()
     refreshCartUI()
 })

@@ -23,7 +23,6 @@ export function isLoggedIn() {
     }
 }
 
-// Använd på sidor där login krävs
 export function requireAuth(redirectUrl = '../pages/login.html') {
     if (!isLoggedIn()) {
         alert('Du måste logga in först')

@@ -227,14 +227,8 @@ function renderUserOrders(orders) {
         .map(
             (order) => `
         <div class="order-card">
-            <span>Order #${order.id}</span>
-            <span>${order.status}</span>
-            <ul>
-                ${order.items
-                    .map((i) => `<li>${i.quantity} × ${i.product?.title}</li>`)
-                    .join('')}
-            </ul>
-            <div>${order.total.toFixed(2)} kr</div>
+            <span>Order #${order.order_id}</span>
+            <div>${order.total_price?.toFixed ? order.total_price.toFixed(2) : order.total_price} kr</div>
         </div>
     `
         )
