@@ -189,7 +189,6 @@ function setupReviewActions() {
                 loadMemberPage()
             } catch (err) {
                 console.error(err)
-
             }
         })
     })

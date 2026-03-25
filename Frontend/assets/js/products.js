@@ -54,7 +54,7 @@ async function loadCategories() {
             button.className = 'category-btn'
             button.textContent = category.title
             button.addEventListener('click', () => {
-                selectedCategory = category.title
+                selectedCategory = category.category_id
                 updateActiveCategoryButton(button)
                 filterAndRenderProducts()
             })
@@ -78,6 +78,11 @@ async function loadProducts() {
         const res = await fetch(`${API_BASE}/api/products`)
         allProducts = await res.json()
 
+        allProducts = allProducts.map((product) => ({
+            ...product,
+            price: Number(product.price) || 0
+        }))
+
         await loadAllRatings()
         filterAndRenderProducts()
     } catch (err) {
@@ -90,7 +95,7 @@ async function loadAllRatings() {
     try {
         const res = await fetch(`${API_BASE}/api/reviews/average/all`)
         const data = await res.json()
-        allRatings = data
+        allRatings = data || {}
     } catch (err) {
         console.error('Kunde inte hämta reviews', err)
         allRatings = {}
@@ -102,30 +107,39 @@ function filterAndRenderProducts() {
 
     if (selectedCategory) {
         filteredProducts = filteredProducts.filter(
-            (product) => product.category?.title === selectedCategory
+            (product) => product.category_id === selectedCategory
         )
     }
 
-    if (selectedSort === 'price-asc') {
-        filteredProducts.sort((a, b) => a.price - b.price)
-    } else if (selectedSort === 'price-desc') {
-        filteredProducts.sort((a, b) => b.price - a.price)
-    } else if (selectedSort === 'title-asc') {
-        filteredProducts.sort((a, b) => a.title.localeCompare(b.title))
-    } else if (selectedSort === 'title-desc') {
-        filteredProducts.sort((a, b) => b.title.localeCompare(a.title))
-    } else if (selectedSort === 'rating-desc') {
-        filteredProducts.sort(
-            (a, b) =>
-                (allRatings[b.product_id]?.averageRating ?? 0) -
-                (allRatings[a.product_id]?.averageRating ?? 0)
-        )
-    } else if (selectedSort === 'rating-asc') {
-        filteredProducts.sort(
-            (a, b) =>
-                (allRatings[a.product_id]?.averageRating ?? 0) -
-                (allRatings[b.product_id]?.averageRating ?? 0)
-        )
+    switch (selectedSort) {
+        case 'price-asc':
+            filteredProducts.sort((a, b) => a.price - b.price)
+            break
+        case 'price-desc':
+            filteredProducts.sort((a, b) => b.price - a.price)
+            break
+        case 'title-asc':
+            filteredProducts.sort((a, b) => a.title.localeCompare(b.title))
+            break
+        case 'title-desc':
+            filteredProducts.sort((a, b) => b.title.localeCompare(a.title))
+            break
+        case 'rating-desc':
+            filteredProducts.sort(
+                (a, b) =>
+                    (allRatings[b.product_id]?.averageRating ?? 0) -
+                    (allRatings[a.product_id]?.averageRating ?? 0)
+            )
+            break
+        case 'rating-asc':
+            filteredProducts.sort(
+                (a, b) =>
+                    (allRatings[a.product_id]?.averageRating ?? 0) -
+                    (allRatings[b.product_id]?.averageRating ?? 0)
+            )
+            break
+        default:
+            break
     }
 
     renderProducts(filteredProducts)

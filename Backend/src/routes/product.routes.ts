@@ -6,9 +6,11 @@ import {
     createProductController,
     updateProductController,
     deleteProductController
-} from '../controllers/product.controllers'
-import { authMiddleware } from '../middlewares/auth.middleware'
-import { adminMiddleware } from '../middlewares/admin.middleware'
+} from "../controllers/product.controllers";
+import { authMiddleware } from "../middlewares/auth.middleware";
+import { adminMiddleware } from "../middlewares/admin.middleware";
+import { validate } from "../middlewares/validate.middleware";
+import { createProductSchema, updateProductSchema } from "../validations/product.validation";
 
 const router = Router()
 
@@ -22,12 +24,12 @@ router.get('/', getProductsByFilterController)
 router.get('/:id', getProductByIdController)
 
 // create product - admin only
-router.post('/', authMiddleware, adminMiddleware, createProductController)
+router.post("/", authMiddleware, adminMiddleware, validate(createProductSchema), createProductController);
 
 // update product - admin only
-router.put('/:id', authMiddleware, adminMiddleware, updateProductController)
+router.put("/:id", authMiddleware, adminMiddleware, validate(updateProductSchema), updateProductController);
 
 //delete product - admin only
 router.delete('/:id', authMiddleware, adminMiddleware, deleteProductController)
 
-export default router
+export default router;

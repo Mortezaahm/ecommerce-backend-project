@@ -51,34 +51,32 @@ async function updateNavbar() {
     if (isLoggedIn) {
         if (accountMainLink) {
             accountMainLink.textContent = 'Min sida'
-            accountMainLink.href = '/Frontend/pages/member.html'
+            accountMainLink.href = '/pages/member.html'
         }
 
         if (registerRow) registerRow.classList.add('d-none')
         if (logoutBtn) logoutBtn.classList.remove('d-none')
-        if (ordersLink)
-            ordersLink.href = '/Frontend/pages/member.html#bestallningar'
-        if (reviewsLink)
-            reviewsLink.href = '/Frontend/pages/member.html#recensioner'
+        if (ordersLink) ordersLink.href = '/pages/member.html#bestallningar'
+        if (reviewsLink) reviewsLink.href = '/pages/member.html#recensioner'
         if (accountDropdown && name)
             accountDropdown.setAttribute('aria-label', `Mitt konto, ${name}`)
     } else {
         if (accountMainLink) {
             accountMainLink.textContent = 'Logga in'
-            accountMainLink.href = '/Frontend/pages/login.html'
+            accountMainLink.href = '/pages/login.html'
         }
 
         if (registerRow) registerRow.classList.remove('d-none')
         if (logoutBtn) logoutBtn.classList.add('d-none')
-        if (ordersLink) ordersLink.href = '/Frontend/pages/login.html'
-        if (reviewsLink) reviewsLink.href = '/Frontend/pages/login.html'
+        if (ordersLink) ordersLink.href = '/pages/login.html'
+        if (reviewsLink) reviewsLink.href = '/pages/login.html'
     }
 
     if (logoutBtn) {
         logoutBtn.addEventListener('click', (e) => {
             e.preventDefault()
             localStorage.clear()
-            window.location.href = '/Frontend/pages/login.html'
+            window.location.href = '/pages/login.html'
         })
     }
 }

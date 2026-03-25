@@ -8,13 +8,14 @@ import {
   getProductByIdWithCategory,
   getProductsWithCategoryAndFilter
 } from "../models/mysql/product.model";
-import type { Product } from "../models/mysql/product.model";
+import type { Product, ProductWithCategory } from "../models/mysql/product.model";
 
 export const getProductsByFilterService = async (
     categoryId?: number,
     minPrice?: number,
     maxPrice?: number,
-    inStock?: boolean
+    inStock?: boolean,
+    sort?: string
 ) => {
     if (minPrice !== undefined && maxPrice !== undefined) {
         if (minPrice > maxPrice) {
@@ -22,10 +23,10 @@ export const getProductsByFilterService = async (
         }
   }
 
-  return await getProductsWithCategoryAndFilter(categoryId, minPrice, maxPrice, inStock);
+  return await getProductsWithCategoryAndFilter(categoryId, minPrice, maxPrice, inStock, sort);
 }
 
-export const getProductByIdService = async (id: number): Promise<Product | null> => {
+export const getProductByIdService = async (id: number): Promise<ProductWithCategory | null> => {
     if (!id || id <= 0) {
         throw new Error ("Invalid product id");
     }
@@ -45,6 +46,10 @@ export const updateProductService = async (
     id: number,
     product: Partial<Product>
 ): Promise<boolean> => {
+
+    if (Object.keys(product).length === 0) {
+        throw new Error("No fields provided for update");
+    }
 
     if (product.price !== undefined && product.price < 0) {
         throw new Error("Price cannot be negative");
