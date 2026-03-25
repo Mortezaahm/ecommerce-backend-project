@@ -1,4 +1,3 @@
-
 function getCart() {
     return JSON.parse(localStorage.getItem('cart')) || []
 }
@@ -188,6 +187,75 @@ function showCartToast(message = 'Produkten lades till i kundvagnen') {
     toast.classList.add('show')
     setTimeout(() => toast.classList.remove('show'), 2500)
 }
+
+async function placeOrder() {
+    const cart = getCart()
+    if (!cart.length) return
+
+    try {
+        const token = localStorage.getItem('token')
+
+        // 1. Hämta user
+        const userRes = await fetch('http://localhost:3000/api/auth/me', {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+
+        const userData = await userRes.json()
+        const user = userData.user || userData.data?.user
+
+        // 2. Skapa order
+        const total = getCartTotal()
+
+        const orderRes = await fetch('http://localhost:3000/api/orders', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                user_id: user.id,
+                total_price: total
+            })
+        })
+
+        const newOrder = await orderRes.json()
+
+        // ⚠️ viktigt: kolla vad din backend returnerar
+        const orderId = newOrder.id || newOrder.insertId
+
+        // 3. Skapa order items
+        for (const item of cart) {
+            await fetch('http://localhost:3000/api/orders/item', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    order_id: orderId,
+                    product_id: item.id,
+                    quantity: item.quantity,
+                    price_at_order: item.price
+                })
+            })
+        }
+
+        // 4. Töm cart
+        localStorage.removeItem('cart')
+
+        // 5. Redirect
+        window.location.href = '/pages/member.html'
+    } catch (err) {
+        console.error(err)
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const btn = document.getElementById('place-order-btn')
+    if (btn) {
+        btn.addEventListener('click', placeOrder)
+    }
+})
 
 document.addEventListener('DOMContentLoaded', () => {
     setupCartEvents()
