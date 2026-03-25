@@ -2,7 +2,18 @@
 import pool from "../../config/mysql";
 import type { ResultSetHeader, RowDataPacket } from "mysql2";
 
-export interface Product extends RowDataPacket {
+export interface ProductDB extends RowDataPacket { // for raw DB rows
+    product_id?: number,
+    title: string,
+    info: string | undefined,
+    price: number,
+    category_id?: number,
+    in_stock?: boolean,
+    created_at?: Date,
+    updated_at?: Date
+}
+
+export interface Product { // for application use
     product_id?: number,
     title: string,
     info?: string,
@@ -38,14 +49,14 @@ export interface ProductWithCategory {
 }
 
 // get all products
-export const getAllProducts = async(): Promise<Product[]> => {
-    const [rows] = await pool.execute<Product[]>("SELECT * FROM products");
+export const getAllProducts = async(): Promise<ProductDB[]> => {
+    const [rows] = await pool.execute<ProductDB[]>("SELECT * FROM products");
     return rows;
 }
 
 // get product by Id
-export const getProductById = async(id:number): Promise<Product | null> => {
-    const [rows] = await pool.execute<Product[]>("SELECT * FROM products WHERE product_id = ?" , [id]);
+export const getProductById = async(id:number): Promise<ProductDB | null> => {
+    const [rows] = await pool.execute<ProductDB[]>("SELECT * FROM products WHERE product_id = ?" , [id]);
     return rows[0] || null;
 }
 
@@ -54,7 +65,7 @@ export const getProductByFilter = async(
     categoryId?: number,
     minPrice?:number,
     maxPrice?:number
-):Promise<Product[]> => {
+):Promise<ProductDB[]> => {
     let query = "SELECT * FROM products WHERE 1 = 1";
     const params :(string | number)[] = [];
 
@@ -73,12 +84,12 @@ export const getProductByFilter = async(
         params.push(maxPrice);
     }
 
-    const [rows] = await pool.execute<Product[]>(query, params);
+    const [rows] = await pool.execute<ProductDB[]>(query, params);
     return rows;
 }
 
 // new function for join with categories
-export const getProductByIdWithCategory = async (id: number) => {
+export const getProductByIdWithCategory = async (id: number): Promise<ProductWithCategory | null> => {
   const [rows] = await pool.execute<ProductRowWithCategory[]>(
     `
     SELECT
@@ -102,11 +113,11 @@ export const getProductByIdWithCategory = async (id: number) => {
   return {
     product_id: row.product_id,
     title: row.title,
-    info: row.info,
     price: row.price,
+    ...(row.info && { info: row.info }),
     category: {
       category_id: row.c_id,
-      title: row.c_name
+      title: row.c_title
     }
   };
 };

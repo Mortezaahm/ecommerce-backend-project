@@ -8,7 +8,7 @@ import {
   getProductByIdWithCategory,
   getProductsWithCategoryAndFilter
 } from "../models/mysql/product.model";
-import type { Product } from "../models/mysql/product.model";
+import type { Product, ProductWithCategory } from "../models/mysql/product.model";
 
 export const getProductsByFilterService = async (
     categoryId?: number,
@@ -26,7 +26,7 @@ export const getProductsByFilterService = async (
   return await getProductsWithCategoryAndFilter(categoryId, minPrice, maxPrice, inStock, sort);
 }
 
-export const getProductByIdService = async (id: number): Promise<Product | null> => {
+export const getProductByIdService = async (id: number): Promise<ProductWithCategory | null> => {
     if (!id || id <= 0) {
         throw new Error ("Invalid product id");
     }
