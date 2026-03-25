@@ -1,9 +1,9 @@
+// Elementreferenser och API-bas
 const productsContainer = document.getElementById('products')
 const categoryButtons = document.getElementById('categoryButtons')
 const sortToggle = document.getElementById('sortToggle')
 const sortPanel = document.getElementById('sortPanel')
 const sortOptions = document.querySelectorAll('.sort-option')
-
 const API_BASE = 'http://localhost:3000'
 
 let allProducts = []
@@ -11,17 +11,21 @@ let allRatings = {}
 let selectedCategory = ''
 let selectedSort = ''
 
+/* --- Sorteringspanel --- */
+// Toggle synlighet av sorteringspanelen
 sortToggle?.addEventListener('click', (event) => {
     event.stopPropagation()
     sortPanel.classList.toggle('hidden')
 })
 
+// Stänger sorteringspanelen om man klickar utanför
 document.addEventListener('click', (event) => {
     if (!event.target.closest('.sort-wrapper')) {
         sortPanel.classList.add('hidden')
     }
 })
 
+// Väljer sorteringsalternativ
 sortOptions.forEach((button) => {
     button.addEventListener('click', () => {
         selectedSort = button.dataset.sort
@@ -32,6 +36,8 @@ sortOptions.forEach((button) => {
     })
 })
 
+/* --- Kategorier --- */
+// Laddar alla kategorier och skapar knappar
 async function loadCategories() {
     try {
         const res = await fetch(`${API_BASE}/api/categories`)
@@ -39,6 +45,7 @@ async function loadCategories() {
 
         categoryButtons.innerHTML = ''
 
+        // "Alla"-knapp
         const allButton = document.createElement('button')
         allButton.className = 'category-btn active'
         allButton.textContent = 'Alla'
@@ -49,6 +56,7 @@ async function loadCategories() {
         })
         categoryButtons.appendChild(allButton)
 
+        // Knappar per kategori
         categories.forEach((category) => {
             const button = document.createElement('button')
             button.className = 'category-btn'
@@ -65,19 +73,22 @@ async function loadCategories() {
     }
 }
 
+// Markerar aktiv kategori
 function updateActiveCategoryButton(activeButton) {
     const buttons = document.querySelectorAll('.category-btn')
     buttons.forEach((button) => button.classList.remove('active'))
     activeButton.classList.add('active')
 }
 
+/* --- Produkter --- */
+// Laddar alla produkter från backend
 async function loadProducts() {
     productsContainer.innerHTML = '<p>Laddar...</p>'
-
     try {
         const res = await fetch(`${API_BASE}/api/products`)
         allProducts = await res.json()
 
+        // Säkerställ numerisk pris
         allProducts = allProducts.map((product) => ({
             ...product,
             price: Number(product.price) || 0
@@ -91,6 +102,7 @@ async function loadProducts() {
     }
 }
 
+// Ladda alla produktbetyg
 async function loadAllRatings() {
     try {
         const res = await fetch(`${API_BASE}/api/reviews/average/all`)
@@ -102,9 +114,11 @@ async function loadAllRatings() {
     }
 }
 
+/* --- Filter & sortering --- */
 function filterAndRenderProducts() {
     let filteredProducts = [...allProducts]
 
+    // Filter per kategori
     if (selectedCategory) {
         filteredProducts = filteredProducts.filter(
             (product) =>
@@ -114,6 +128,7 @@ function filterAndRenderProducts() {
         )
     }
 
+    // Sortering
     switch (selectedSort) {
         case 'price-asc':
             filteredProducts.sort((a, b) => a.price - b.price)
@@ -148,6 +163,7 @@ function filterAndRenderProducts() {
     renderProducts(filteredProducts)
 }
 
+/* --- Rendera produkter --- */
 function renderProducts(products) {
     productsContainer.innerHTML = ''
 
@@ -165,12 +181,13 @@ function renderProducts(products) {
         const div = document.createElement('article')
         div.className = 'product'
 
+        // Klick på produktkort går till produktsidan
         div.addEventListener('click', () => {
             window.location.href = `./product-spec.html?id=${product.product_id}`
         })
 
         div.innerHTML = `
-            <img src="${product.image || 'https://via.placeholder.com/400x400?text=No+Image'}" alt="${product.title}">
+            <img src="${product.image || '../assets/media/juice-placeholder.png'}" alt="${product.title}">
             <div class="product-content">
                 <div class="rating">
                     ${renderStars(Math.round(ratingData.averageRating))} (${ratingData.totalReviews} recensioner)
@@ -187,6 +204,7 @@ function renderProducts(products) {
             </div>
         `
 
+        // Lägg till i kundvagn-knapp
         const addToCartButton = div.querySelector('.add-to-cart-mini')
         addToCartButton?.addEventListener('click', (event) => {
             event.stopPropagation()
@@ -198,6 +216,7 @@ function renderProducts(products) {
     })
 }
 
+// Renderar stjärnor
 function renderStars(rating) {
     let stars = ''
     for (let i = 1; i <= 5; i++) stars += i <= rating ? '★' : '☆'

@@ -1,25 +1,24 @@
 /*
 CSS-kommentar: Strukturöversikt
-1. Grundstil
-2. Main-sektion
-   2.1 Hero-sektion
-   2.2 Layout och paneler
-   2.3 Kort och innehåll
+1. Main-sektion
+2. Hero-sektion
+3. Layout och paneler
+4. Kort och innehåll
 */
 
-/* 1. Grundstil */
+/* 1. Main-sektion */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
-/* 2. Main-sektion */
+
 .member-page {
     padding: 40px 20px 60px;
     background: #efe9e1;
 }
 
-/* 2.1 Hero-sektion */
+/* 2. Hero-sektion */
 .member-hero {
     max-width: 1000px;
     margin: 0 auto 30px;
@@ -61,7 +60,7 @@ CSS-kommentar: Strukturöversikt
     transform: translateY(-1px);
 }
 
-/* 2.2 Layout och paneler */
+/* 3. Layout och paneler */
 .member-layout {
     max-width: 1000px;
     margin: 0 auto;
@@ -89,7 +88,7 @@ CSS-kommentar: Strukturöversikt
     line-height: 1.5;
 }
 
-/* 2.3 Kort och innehåll */
+/* 4. Kort och innehåll */
 .card-list {
     display: grid;
     gap: 14px;
@@ -163,11 +162,7 @@ CSS-kommentar: Strukturöversikt
     font-size: 0.9rem;
 }
 
-.edit-review-btn {
-    background-color: black;
-    color: white;
-}
-
+.edit-review-btn,
 .delete-review-btn {
     background-color: black;
     color: white;

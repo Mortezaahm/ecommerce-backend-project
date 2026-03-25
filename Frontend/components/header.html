@@ -1,4 +1,15 @@
+<!--
+HTML-kommentar: Strukturöversikt
+1. Head
+2. Body
+   2.1 Header
+       2.1.1 Konto-dropdown
+       2.1.2 Varukorg-dropdown
+       2.1.3 Huvudmeny med länkar och produkter
+-->
+
 <head>
+    <!-- 1. Head -->
     <link rel="stylesheet" href="/assets/css/nav-footer.css" />
 
     <link
@@ -12,8 +23,10 @@
 </head>
 
 <header>
+    <!-- 2.1 Header -->
     <nav class="navbar navbar-expand-lg sticky-top shop-navbar">
         <div class="container-fluid px-4 px-lg-5 mobile-nav-wrap">
+            <!-- Mobil menyknapp -->
             <button
                 class="navbar-toggler border-0"
                 type="button"
@@ -24,6 +37,7 @@
                 <i class="bi bi-list"></i>
             </button>
 
+            <!-- Logo -->
             <a
                 class="navbar-brand fw-bold fs-4 mobile-centered-logo"
                 id="logo"
@@ -33,7 +47,7 @@
             </a>
 
             <div class="d-flex align-items-center navbar-actions mobile-icons">
-                <!-- Konto -->
+                <!-- 2.1.1 Konto-dropdown -->
                 <div class="dropdown hover-dropdown account-dropdown">
                     <button
                         class="btn account-trigger"
@@ -55,15 +69,17 @@
                                 href="/pages/login.html"
                                 class="account-login-btn"
                                 id="account-main-link"
-                                >Logga in</a
                             >
+                                Logga in
+                            </a>
 
                             <div class="account-register-row" id="register-row">
                                 <a
                                     href="/pages/register.html"
                                     class="account-register-link"
-                                    >Registrera</a
                                 >
+                                    Registrera
+                                </a>
                             </div>
 
                             <hr />
@@ -76,7 +92,6 @@
                                 >
                                     Mina beställningar
                                 </a>
-
                                 <a
                                     class="dropdown-item"
                                     id="reviews-link"
@@ -84,14 +99,12 @@
                                 >
                                     Mina recensioner
                                 </a>
-
                                 <a
                                     class="dropdown-item"
                                     href="/pages/contact-about-us.html"
                                 >
                                     Hjälp & kontakt
                                 </a>
-
                                 <a
                                     id="logout-btn"
                                     class="dropdown-item d-none"
@@ -104,7 +117,7 @@
                     </div>
                 </div>
 
-                <!-- Varukorg -->
+                <!-- 2.1.2 Varukorg-dropdown -->
                 <div class="dropdown hover-dropdown cart-wrapper">
                     <button
                         class="btn cart-trigger position-relative"
@@ -116,7 +129,6 @@
                         aria-label="Varukorg"
                     >
                         <i class="bi bi-cart3"></i>
-
                         <span
                             class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-black cart-btn-badge"
                         >
@@ -132,14 +144,11 @@
                             <div id="cartItems">
                                 <p class="mb-3">Din varukorg är tom.</p>
                             </div>
-
                             <hr />
-
                             <div class="d-flex justify-content-between mb-3">
                                 <span class="fw-semibold">Summa</span>
                                 <span class="fw-bold" id="cartTotal">0 kr</span>
                             </div>
-
                             <div class="d-grid gap-2">
                                 <a
                                     href="/pages/cart.html"
@@ -153,6 +162,7 @@
                 </div>
             </div>
 
+            <!-- 2.1.3 Huvudmeny med länkar och produkter -->
             <div class="collapse navbar-collapse" id="mainNavbar">
                 <ul class="navbar-nav ms-lg-5 gap-lg-2 mb-2 mb-lg-0">
                     <li class="nav-item">
@@ -180,168 +190,8 @@
                                     <div class="col-lg-12">
                                         <div
                                             class="row row-cols-2 row-cols-md-3 row-cols-lg-6 g-3"
-                                        >
-                                            <div class="col-sm-6 col-lg">
-                                                <a
-                                                    href="/pages/product-spec.html?id=1"
-                                                    class="mega-product-card"
-                                                >
-                                                    <img
-                                                        src="/assets/media/juice-antiox.png"
-                                                        alt="juice-antiox"
-                                                        class="img-fluid mega-product-img"
-                                                    />
-                                                    <div
-                                                        class="mega-product-body"
-                                                    >
-                                                        <h6 class="mb-1">
-                                                            Röd Antiox
-                                                        </h6>
-                                                        <p class="small mb-0">
-                                                            Fräsch, fyllig och
-                                                            full av naturliga
-                                                            antioxidanter som
-                                                            hjälper kroppen att
-                                                            må bra.
-                                                        </p>
-                                                    </div>
-                                                </a>
-                                            </div>
-
-                                            <div class="col-sm-6 col-lg">
-                                                <a
-                                                    href="/pages/product-spec.html?id=2"
-                                                    class="mega-product-card"
-                                                >
-                                                    <img
-                                                        src="/assets/media/juice-boost.png"
-                                                        alt="juice-boost"
-                                                        class="img-fluid mega-product-img"
-                                                    />
-                                                    <div
-                                                        class="mega-product-body"
-                                                    >
-                                                        <h6 class="mb-1">
-                                                            Tropisk Boost
-                                                        </h6>
-                                                        <p class="small mb-0">
-                                                            Den perfekta drycken
-                                                            när du vill ha något
-                                                            uppfriskande,
-                                                            fruktigt och
-                                                            energigivande.
-                                                        </p>
-                                                    </div>
-                                                </a>
-                                            </div>
-
-                                            <div class="col-sm-6 col-lg">
-                                                <a
-                                                    href="/pages/product-spec.html?id=3"
-                                                    class="mega-product-card"
-                                                >
-                                                    <img
-                                                        src="/assets/media/juice-carrot.png"
-                                                        alt="juice-carrot"
-                                                        class="img-fluid mega-product-img"
-                                                    />
-                                                    <div
-                                                        class="mega-product-body"
-                                                    >
-                                                        <h6 class="mb-1">
-                                                            Apelsin Morot
-                                                        </h6>
-                                                        <p class="small mb-0">
-                                                            Söt, frisk och fylld
-                                                            med naturliga
-                                                            vitaminer – en
-                                                            perfekt start på
-                                                            dagen.
-                                                        </p>
-                                                    </div>
-                                                </a>
-                                            </div>
-
-                                            <div class="col-sm-6 col-lg">
-                                                <a
-                                                    href="/pages/product-spec.html?id=4"
-                                                    class="mega-product-card"
-                                                >
-                                                    <img
-                                                        src="/assets/media/juice-cleanse.png"
-                                                        alt="juice-cleanse"
-                                                        class="img-fluid mega-product-img"
-                                                    />
-                                                    <div
-                                                        class="mega-product-body"
-                                                    >
-                                                        <h6 class="mb-1">
-                                                            Grön Cleanse
-                                                        </h6>
-                                                        <p class="small mb-0">
-                                                            Perfekt när du vill
-                                                            fylla på med
-                                                            naturlig energi och
-                                                            känna dig pigg under
-                                                            dagen.
-                                                        </p>
-                                                    </div>
-                                                </a>
-                                            </div>
-
-                                            <div class="col-sm-6 col-lg">
-                                                <a
-                                                    href="/pages/product-spec.html?id=5"
-                                                    class="mega-product-card"
-                                                >
-                                                    <img
-                                                        src="/assets/media/juice-ginger.png"
-                                                        alt="juice-ginger"
-                                                        class="img-fluid mega-product-img"
-                                                    />
-                                                    <div
-                                                        class="mega-product-body"
-                                                    >
-                                                        <h6 class="mb-1">
-                                                            Ingefära Citron
-                                                        </h6>
-                                                        <p class="small mb-0">
-                                                            En pigg juice med
-                                                            citron och ingefära
-                                                            som ger en fräsch
-                                                            och lätt kryddig
-                                                            smak.
-                                                        </p>
-                                                    </div>
-                                                </a>
-                                            </div>
-
-                                            <div class="col-sm-6 col-lg">
-                                                <a
-                                                    href="/pages/product-spec.html?id=6"
-                                                    class="mega-product-card"
-                                                >
-                                                    <img
-                                                        src="/assets/media/juice-rose.png"
-                                                        alt="juice-rose"
-                                                        class="img-fluid mega-product-img"
-                                                    />
-                                                    <div
-                                                        class="mega-product-body"
-                                                    >
-                                                        <h6 class="mb-1">
-                                                            Rosenfrisk
-                                                        </h6>
-                                                        <p class="small mb-0">
-                                                            En livlig rosa juice
-                                                            med fräsch smak av
-                                                            bär och citrus. Lätt
-                                                            och uppfriskande.
-                                                        </p>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                        </div>
+                                            id="navbar-products-list"
+                                        ></div>
 
                                         <div class="mt-4 text-center">
                                             <a
@@ -358,15 +208,15 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="/pages/contact-about-us.html">
-                            Om oss
-                        </a>
+                        <a class="nav-link" href="/pages/contact-about-us.html"
+                            >Om oss</a
+                        >
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="/pages/contact-about-us.html">
-                            Kontakt
-                        </a>
+                        <a class="nav-link" href="/pages/contact-about-us.html"
+                            >Kontakt</a
+                        >
                     </li>
                 </ul>
             </div>

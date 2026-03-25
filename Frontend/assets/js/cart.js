@@ -1,20 +1,24 @@
-// ======== CART HELPERS ========
+// Hämtar kundvagnen från localStorage, returnerar array (tom om ingen)
 function getCart() {
     return JSON.parse(localStorage.getItem('cart')) || []
 }
 
+// Sparar kundvagnen i localStorage
 function saveCart(cart) {
     localStorage.setItem('cart', JSON.stringify(cart))
 }
 
+// Formaterar pris till sträng med 2 decimaler och kr
 function formatPrice(price) {
     return `${Number(price || 0).toFixed(2)} kr`
 }
 
+// Räknar total antal produkter i kundvagnen
 function getCartCount() {
     return getCart().reduce((sum, item) => sum + item.quantity, 0)
 }
 
+// Räknar totalpris för kundvagnen
 function getCartTotal() {
     return getCart().reduce(
         (sum, item) => sum + Number(item.price || 0) * item.quantity,
@@ -22,7 +26,7 @@ function getCartTotal() {
     )
 }
 
-// ======== CART ACTIONS ========
+// Lägger till produkt i kundvagnen (eller ökar kvantitet om redan finns)
 function addToCart(product, quantity = 1) {
     const cart = getCart()
     const id = String(product.id ?? product.product_id)
@@ -35,7 +39,7 @@ function addToCart(product, quantity = 1) {
             id,
             title: product.title,
             price: Number(product.price || 0),
-            image: product.image || 'https://via.placeholder.com/150',
+            image: product.image || '/assets/media/juice-placeholder.png',
             quantity
         })
     }
@@ -45,6 +49,7 @@ function addToCart(product, quantity = 1) {
     showCartToast(`${product.title} lades till i kundvagnen`)
 }
 
+// Tar bort produkt från kundvagnen
 function removeFromCart(productId) {
     const id = String(productId)
     const cart = getCart().filter((item) => item.id !== id)
@@ -52,6 +57,7 @@ function removeFromCart(productId) {
     refreshCartUI()
 }
 
+// Uppdaterar kvantitet för en produkt, tar bort om 0
 function updateQuantity(productId, newQuantity) {
     const id = String(productId)
     const cart = getCart()
@@ -68,13 +74,14 @@ function updateQuantity(productId, newQuantity) {
     refreshCartUI()
 }
 
-// ======== RENDER ========
+// Renderar siffran på kundvagnsikonen
 function renderCartBadge() {
     const badge = document.querySelector('.cart-btn-badge')
     if (!badge) return
     badge.textContent = getCartCount()
 }
 
+// Renderar dropdown-menyn för kundvagnen i navbaren
 function renderNavbarCart() {
     const container = document.getElementById('cartItems')
     const totalEl = document.getElementById('cartTotal')
@@ -110,6 +117,7 @@ function renderNavbarCart() {
     totalEl.textContent = formatPrice(getCartTotal())
 }
 
+// Renderar sidan för kundvagnen (cart.html)
 function renderCartPage() {
     const itemsEl = document.getElementById('cartPageItems')
     const totalEl = document.getElementById('cartPageTotal')
@@ -153,7 +161,7 @@ function renderCartPage() {
         .join('')
 }
 
-// ======== EVENTS ========
+// Initierar klick-events för + / - / ta bort
 let cartEventsInitialized = false
 function setupCartEvents() {
     if (cartEventsInitialized) return
@@ -177,12 +185,14 @@ function setupCartEvents() {
     })
 }
 
+// Uppdaterar all kundvagns-UI: badge, dropdown och sida
 function refreshCartUI() {
     renderCartBadge()
     renderNavbarCart()
     renderCartPage()
 }
 
+// Visar toast-meddelande när produkt läggs till
 function showCartToast(message = 'Produkten lades till i kundvagnen') {
     const toast = document.getElementById('cartToast')
     if (!toast) return
@@ -191,7 +201,7 @@ function showCartToast(message = 'Produkten lades till i kundvagnen') {
     setTimeout(() => toast.classList.remove('show'), 2500)
 }
 
-// ======== PLACE ORDER ========
+// Skickar order till backend
 async function placeOrder() {
     const cart = getCart()
     if (!cart.length) return alert('Din kundvagn är tom')
@@ -200,7 +210,7 @@ async function placeOrder() {
         const token = localStorage.getItem('token')
         if (!token) throw new Error('Ingen användare inloggad')
 
-        // Hämta user
+        // Hämta användardata
         const userRes = await fetch('http://localhost:3000/api/auth/me', {
             headers: { Authorization: `Bearer ${token}` }
         })
@@ -219,10 +229,7 @@ async function placeOrder() {
             body: JSON.stringify({ userId: user.id, totalPrice: total })
         })
 
-        console.log('Order response status:', orderRes.status)
         const text = await orderRes.text()
-        console.log('Order response body raw:', text)
-
         let newOrder
         try {
             newOrder = JSON.parse(text)
@@ -231,11 +238,10 @@ async function placeOrder() {
             throw new Error('Order skapades inte! Backend skickade inte JSON')
         }
 
-        console.log('New order from backend:', newOrder)
         const orderId = newOrder.orderId || newOrder.insertId || newOrder.id
         if (!orderId) throw new Error('Order skapades inte!')
 
-        // Skapa order items
+        // Skapa order-items
         for (const item of cart) {
             const res = await fetch('http://localhost:3000/api/order-items', {
                 method: 'POST',
@@ -254,11 +260,11 @@ async function placeOrder() {
             })
             if (!res.ok) {
                 const errText = await res.text()
-                console.error('Order item error:', errText)
                 throw new Error('Order item kunde inte skapas: ' + errText)
             }
         }
 
+        // Töm kundvagn
         localStorage.removeItem('cart')
         refreshCartUI()
         window.location.href = '/pages/member.html'
@@ -268,7 +274,6 @@ async function placeOrder() {
     }
 }
 
-// ======== INIT ========
 document.addEventListener('DOMContentLoaded', () => {
     const btn = document.getElementById('place-order-btn')
     if (btn) btn.addEventListener('click', placeOrder)
