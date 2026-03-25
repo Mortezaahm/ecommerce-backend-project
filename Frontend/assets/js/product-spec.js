@@ -152,7 +152,6 @@ function renderReviews(reviews) {
                     <div class="review-card">
                         <div class="review-header">
                             ${renderStars(r.rating)}
-                            ${userId === r.userId ? `<button class="delete-btn" data-id="${r._id}">Ta bort</button>` : ''}
                         </div>
                         <p class="review-comment">${r.comment}</p>
                         <small>Av användare #${r.userId}</small>
@@ -162,8 +161,6 @@ function renderReviews(reviews) {
                 .join('')}
         </div>
     `
-
-    attachDeleteEvents()
 }
 
 async function submitReview() {
@@ -202,27 +199,6 @@ async function submitReview() {
     } catch (err) {
         console.error(err)
     }
-}
-
-function attachDeleteEvents() {
-    document.querySelectorAll('.delete-btn').forEach((btn) => {
-        btn.addEventListener('click', async () => {
-            const id = btn.dataset.id
-            const token = localStorage.getItem('token')
-            if (!token || !confirm('Ta bort review?')) return
-
-            try {
-                await fetch(`${API_BASE}/api/reviews/${id}`, {
-                    method: 'DELETE',
-                    headers: { Authorization: `Bearer ${token}` }
-                })
-                await loadReviews()
-                await loadSingleProduct()
-            } catch (err) {
-                console.error(err)
-            }
-        })
-    })
 }
 
 async function loadAverageRating() {
