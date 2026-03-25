@@ -56,9 +56,26 @@ export const createUser = async (user: CreateUserInput) => {
 
     return result.insertId;
   } catch (error) {
-    throw new Error (`Failed to create user: ${error as Error}.message`)
+    throw new Error (`Failed to create user: ${(error as Error).message}`)
   }
 };
+
+// Get all users / for admin panel - not used in this project but can be useful for future
+export const getAllUsers = async (): Promise<SafeUser[]> => {
+  try {
+    const [rows] = await pool.execute<SafeUser[]>(
+      `
+      SELECT id, name, email, role
+      FROM users
+      `
+    );
+
+    return rows;
+  } catch (error) {
+    throw new Error(`Failed to get users: ${(error as Error).message}`);
+  }
+};
+
 
 // 2) Get = find user by email
 export const findUserByEmail = async (email: string) => {
@@ -128,6 +145,6 @@ export const deleteUser = async (id:number):Promise<boolean> => {
     );
     return result.affectedRows > 0;
   } catch (error) {
-    throw new Error(`Failed to delete user: ${error as Error}.message`);
+    throw new Error(`Failed to delete user: ${(error as Error).message}`);
   }
 }

@@ -1,5 +1,6 @@
 // logic for product management, including CRUD operations and business logic related to products
 import {
+    getAllProducts,
   getProductById,
   getProductByFilter,
   createProduct,
@@ -8,7 +9,11 @@ import {
   getProductByIdWithCategory,
   getProductsWithCategoryAndFilter
 } from "../models/mysql/product.model";
-import type { Product, ProductWithCategory } from "../models/mysql/product.model";
+import type { Product, ProductDB, ProductWithCategory } from "../models/mysql/product.model";
+
+export const getProductsService = async (): Promise<ProductDB[]> => {
+    return await getAllProducts();
+}
 
 export const getProductsByFilterService = async (
     categoryId?: number,

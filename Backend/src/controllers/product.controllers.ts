@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import {
+  getProductsService,
   getProductByIdService,
   getProductsByFilterService,
   createProductService,
@@ -19,6 +20,23 @@ const parseBoolean = (value: unknown): boolean | undefined => {
   if (value === undefined) return undefined;
   return value === "true" || value === "1" || value === 1;
 };
+
+// GET /products (without filter - for admin panel)
+export const getAllProductsController = async (req: Request, res: Response) => {
+  try {
+    const products = await getProductsService();
+    return res.status(200).json({
+    success: true,
+    products
+})
+  } catch (error) {
+    return res.status(500).json({
+      message: "Failed to fetch products",
+      error
+    })
+  }
+};
+
 
 // GET /products (with filter)
 export const getProductsByFilterController = async (req: Request, res: Response) => {
