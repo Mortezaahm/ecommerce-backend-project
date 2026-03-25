@@ -2,7 +2,7 @@ const productDetail = document.getElementById('productDetail')
 const backButton = document.getElementById('backButton')
 const reviewsContainer = document.getElementById('reviewsContainer')
 const reviewFormContainer = document.getElementById('reviewFormContainer')
-const API_BASE = ''
+const API_BASE = 'http://localhost:3000'
 
 backButton?.addEventListener('click', () => {
     window.location.href = './products.html'
@@ -64,7 +64,7 @@ function renderProduct(product, ratingData) {
                 </div>
 
                 <h1>${product.title}</h1>
-                <p class="category">Kategori: ${product.category?.name || 'Okänd'}</p>
+                <p class="category">Kategori: ${product.category?.title || 'Okänd'}</p>
                 <p class="description">${product.info || 'Ingen beskrivning'}</p>
                 <div class="price">${product.price.toFixed(2)} kr</div>
 

@@ -54,7 +54,7 @@ async function loadCategories() {
             button.className = 'category-btn'
             button.textContent = category.title
             button.addEventListener('click', () => {
-                selectedCategory = category.category_id
+                selectedCategory = String(category.category_id)
                 updateActiveCategoryButton(button)
                 filterAndRenderProducts()
             })
@@ -107,7 +107,10 @@ function filterAndRenderProducts() {
 
     if (selectedCategory) {
         filteredProducts = filteredProducts.filter(
-            (product) => product.category_id === selectedCategory
+            (product) =>
+                product.category &&
+                String(product.category.category_id) ===
+                    String(selectedCategory)
         )
     }
 
@@ -174,6 +177,7 @@ function renderProducts(products) {
                 </div>
                 <h2>${product.title}</h2>
                 <p>${product.info || 'Ingen beskrivning'}</p>
+                <div class="category">Kategori: ${product.category?.title || 'Okänd'}</div>
                 <div class="product-bottom">
                     <div class="price">${product.price.toFixed(2)} kr</div>
                     <button class="add-to-cart-mini" data-id="${product.product_id}" type="button">
