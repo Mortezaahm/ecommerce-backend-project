@@ -172,11 +172,24 @@ function renderProducts(products) {
         return
     }
 
-    products.forEach((product) => {
+    products.forEach(async (product) => {
         const ratingData = allRatings[product.product_id] || {
             averageRating: 0,
             totalReviews: 0
         }
+
+        // Fetch images for this product
+        let imageSrc = '/assets/media/juice-placeholder.png'
+        try {
+            const res = await fetch(
+                `${API_BASE}/api/product-images/product/${product.product_id}`
+            )
+            const images = await res.json()
+            if (Array.isArray(images) && images.length > 0) {
+                // Use the first image from the DB, assuming it matches a file in /assets/media
+                imageSrc = `/api/product-images/file/${images[0].image_name}`
+            }
+        } catch (e) {}
 
         const div = document.createElement('article')
         div.className = 'product'
@@ -187,14 +200,13 @@ function renderProducts(products) {
         })
 
         div.innerHTML = `
-            <img src="${product.image || '../assets/media/juice-placeholder.png'}" alt="${product.title}">
+            <img src="${imageSrc}" alt="${product.title}">
             <div class="product-content">
                 <div class="rating">
                     ${renderStars(Math.round(ratingData.averageRating))} (${ratingData.totalReviews} recensioner)
                 </div>
                 <h2>${product.title}</h2>
                 <p>${product.info || 'Ingen beskrivning'}</p>
-                <div class="category">Kategori: ${product.category?.title || 'Okänd'}</div>
                 <div class="product-bottom">
                     <div class="price">${product.price.toFixed(2)} kr</div>
                     <button class="add-to-cart-mini" data-id="${product.product_id}" type="button">
