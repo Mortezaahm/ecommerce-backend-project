@@ -1,18 +1,9 @@
-/*
-JavaScript-kommentar: Strukturöversikt
-1. Funktion som laddar in HTML-komponenter
-2. Initiering som laddar header och footer
-3. Skickar ett event när komponenterna är färdiga
-*/
-
-/* 1. Laddar en HTML-komponent och placerar den i rätt element */
+// Laddar en HTML-komponent och placerar den i rätt element
 async function loadComponent(id, file) {
     const element = document.getElementById(id)
-
     if (!element) return
 
     const response = await fetch(file)
-
     if (!response.ok) {
         throw new Error(`Kunde inte ladda ${file}`)
     }
@@ -20,27 +11,27 @@ async function loadComponent(id, file) {
     element.innerHTML = await response.text()
 }
 
-/* 2. Startfunktion som laddar header och footer */
+// Initierar komponenterna (header och footer)
 async function initComponents() {
-    /* Avgör rätt sökväg beroende på sida */
+    // Avgör rätt sökväg beroende på sida
     const basePath = window.location.pathname.includes('/pages/') ? '../' : './'
 
-    /* Laddar komponenterna */
+    // Ladda header och footer
     await loadComponent('header', `${basePath}components/header.html`)
     await loadComponent('footer', `${basePath}components/footer.html`)
 
-    /* 3. Skickar event när allt är färdigt */
+    // Skicka event när komponenterna är färdiga
     document.dispatchEvent(new CustomEvent('componentsLoaded'))
 }
 
-// components.js – efter document.dispatchEvent('componentsLoaded')
+// Uppdaterar navbar baserat på om användaren är inloggad
 async function updateNavbar() {
     const token = localStorage.getItem('token')
     const userId = localStorage.getItem('userId')
     const name = localStorage.getItem('name')
-
     const isLoggedIn = !!token && !!userId
 
+    // Hämta element i navbaren
     const accountMainLink = document.getElementById('account-main-link')
     const registerRow = document.getElementById('register-row')
     const logoutBtn = document.getElementById('logout-btn')
@@ -49,11 +40,11 @@ async function updateNavbar() {
     const accountDropdown = document.getElementById('accountDropdown')
 
     if (isLoggedIn) {
+        // Visa "Min sida" och dölja registreringslänken
         if (accountMainLink) {
             accountMainLink.textContent = 'Min sida'
             accountMainLink.href = '/pages/member.html'
         }
-
         if (registerRow) registerRow.classList.add('d-none')
         if (logoutBtn) logoutBtn.classList.remove('d-none')
         if (ordersLink) ordersLink.href = '/pages/member.html#bestallningar'
@@ -61,27 +52,28 @@ async function updateNavbar() {
         if (accountDropdown && name)
             accountDropdown.setAttribute('aria-label', `Mitt konto, ${name}`)
     } else {
+        // Visa "Logga in" och visa registreringslänk
         if (accountMainLink) {
             accountMainLink.textContent = 'Logga in'
             accountMainLink.href = '/pages/login.html'
         }
-
         if (registerRow) registerRow.classList.remove('d-none')
         if (logoutBtn) logoutBtn.classList.add('d-none')
         if (ordersLink) ordersLink.href = '/pages/login.html'
         if (reviewsLink) reviewsLink.href = '/pages/login.html'
     }
 
+    // Logout-knapp
     if (logoutBtn) {
         logoutBtn.addEventListener('click', (e) => {
             e.preventDefault()
-            localStorage.clear()
-            window.location.href = '/pages/login.html'
+            localStorage.clear() // Rensa all lokal användardata
+            window.location.href = '/pages/login.html' // Skicka till login
         })
     }
 }
 
+// Kör updateNavbar när komponenterna är färdiga
 document.addEventListener('componentsLoaded', updateNavbar)
 
-/* Kör startfunktionen */
 initComponents()

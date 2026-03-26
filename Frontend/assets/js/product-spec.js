@@ -1,13 +1,16 @@
+// Elementreferenser och API-basurl
 const productDetail = document.getElementById('productDetail')
 const backButton = document.getElementById('backButton')
 const reviewsContainer = document.getElementById('reviewsContainer')
 const reviewFormContainer = document.getElementById('reviewFormContainer')
-const API_BASE = ''
+const API_BASE = 'http://localhost:3000'
 
+// Tillbaka-knappen tar användaren till produktsidan
 backButton?.addEventListener('click', () => {
     window.location.href = './products.html'
 })
 
+// Hämtar produkt-id från URL
 function getProductIdFromUrl() {
     const params = new URLSearchParams(window.location.search)
     return params.get('id')
@@ -15,7 +18,7 @@ function getProductIdFromUrl() {
 
 const productId = getProductIdFromUrl()
 
-// ======== INIT PAGE ========
+// Initiera sidan när DOM eller komponenter är laddade
 document.addEventListener('DOMContentLoaded', initProductPage)
 document.addEventListener('componentsLoaded', initProductPage)
 
@@ -29,17 +32,16 @@ function initProductPage() {
     loadSingleProduct()
     loadReviews()
 
+    // Submit-knapp för nya reviews
     const submitBtn = document.getElementById('submitReview')
-    if (submitBtn) {
-        submitBtn.addEventListener('click', submitReview)
-    }
+    if (submitBtn) submitBtn.addEventListener('click', submitReview)
 }
 
+// Hämtar produktdata från backend
 async function loadSingleProduct() {
     try {
         const res = await fetch(`${API_BASE}/api/products/${productId}`)
         const product = await res.json()
-
         product.price = Number(product.price) || 0
 
         const ratingData = await loadAverageRating()
@@ -50,11 +52,12 @@ async function loadSingleProduct() {
     }
 }
 
+// Renderar produktkort
 function renderProduct(product, ratingData) {
     productDetail.innerHTML = `
         <div class="product-detail-card">
             <div class="product-detail-image">
-                <img src="${product.image || 'https://via.placeholder.com/400x400?text=No+Image'}" alt="${product.title}">
+                <img src="${product.image || '/assets/media/juice-placeholder.png'}" alt="${product.title}">
             </div>
 
             <div class="product-detail-info">
@@ -64,7 +67,7 @@ function renderProduct(product, ratingData) {
                 </div>
 
                 <h1>${product.title}</h1>
-                <p class="category">Kategori: ${product.category?.name || 'Okänd'}</p>
+                <p class="category">Kategori: ${product.category?.title || 'Okänd'}</p>
                 <p class="description">${product.info || 'Ingen beskrivning'}</p>
                 <div class="price">${product.price.toFixed(2)} kr</div>
 
@@ -86,6 +89,7 @@ function renderProduct(product, ratingData) {
     setupProductActions(product)
 }
 
+// Hanterar knapptryck för kvantitet och "lägg till i kundvagn"
 function setupProductActions(product) {
     const decreaseBtn = document.getElementById('decreaseQty')
     const increaseBtn = document.getElementById('increaseQty')
@@ -112,6 +116,7 @@ function setupProductActions(product) {
     })
 }
 
+// Hämtar alla reviews för produkten
 async function loadReviews() {
     if (!reviewsContainer) return
     try {
@@ -130,6 +135,7 @@ async function loadReviews() {
     }
 }
 
+// Renderar reviews på sidan
 function renderReviews(reviews) {
     const userId = getUserIdFromToken()
 
@@ -152,7 +158,6 @@ function renderReviews(reviews) {
                     <div class="review-card">
                         <div class="review-header">
                             ${renderStars(r.rating)}
-                            ${userId === r.userId ? `<button class="delete-btn" data-id="${r._id}">Ta bort</button>` : ''}
                         </div>
                         <p class="review-comment">${r.comment}</p>
                         <small>Av användare #${r.userId}</small>
@@ -162,10 +167,9 @@ function renderReviews(reviews) {
                 .join('')}
         </div>
     `
-
-    attachDeleteEvents()
 }
 
+// Skickar en ny review till backend
 async function submitReview() {
     const token = localStorage.getItem('token')
     if (!token) {
@@ -204,27 +208,7 @@ async function submitReview() {
     }
 }
 
-function attachDeleteEvents() {
-    document.querySelectorAll('.delete-btn').forEach((btn) => {
-        btn.addEventListener('click', async () => {
-            const id = btn.dataset.id
-            const token = localStorage.getItem('token')
-            if (!token || !confirm('Ta bort review?')) return
-
-            try {
-                await fetch(`${API_BASE}/api/reviews/${id}`, {
-                    method: 'DELETE',
-                    headers: { Authorization: `Bearer ${token}` }
-                })
-                await loadReviews()
-                await loadSingleProduct()
-            } catch (err) {
-                console.error(err)
-            }
-        })
-    })
-}
-
+// Hämtar medelbetyg och antal reviews för produkten
 async function loadAverageRating() {
     try {
         const res = await fetch(
@@ -240,12 +224,14 @@ async function loadAverageRating() {
     }
 }
 
+// Renderar stjärnor
 function renderStars(rating) {
     let stars = ''
     for (let i = 1; i <= 5; i++) stars += i <= rating ? '★' : '☆'
     return `<span class="stars">${stars}</span>`
 }
 
+// Hämtar userId från JWT-token
 function getUserIdFromToken() {
     const token = localStorage.getItem('token')
     if (!token) return null
@@ -257,6 +243,7 @@ function getUserIdFromToken() {
     }
 }
 
+// Kontrollera om användaren är inloggad
 function isLoggedIn() {
     const token = localStorage.getItem('token')
     if (!token) return false
@@ -268,6 +255,7 @@ function isLoggedIn() {
     }
 }
 
+// Visa eller dölj review-form beroende på inloggning
 function toggleReviewFormVisibility() {
     if (!reviewFormContainer) return
 
