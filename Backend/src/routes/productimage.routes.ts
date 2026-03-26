@@ -7,7 +7,7 @@ import {
   updateProductImage,
   deleteProductImage,
   getProductWithImages
-} from "../controllers/productImage.controllers";
+} from "../controllers/productimage.controllers";
 
 const router = express.Router();
 
