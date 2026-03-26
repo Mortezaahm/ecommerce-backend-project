@@ -110,7 +110,7 @@ export const deleteCategoryController = async(req: Request, res: Response) => {
         const deleted = await deleteCategoryService(id);
 
         if (!deleted) {
-            res.status(404).json({
+            return res.status(404).json({
                 message: "Category not found"
             })
         }
