@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             body: JSON.stringify({ role: newRole }),
           });
           const data = await res.json();
-          if (!data.success) throw new Error(data.message);
+          if (!data.success && data.message) throw new Error(data.message);
           alert("Role updated successfully");
         } catch (err) {
           alert(err.message);
@@ -93,7 +93,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             },
           });
           const data = await res.json();
-          if (!data.success) throw new Error(data.message);
+          if (!data.success && data.message) throw new Error(data.message);
           alert("User deleted successfully");
           fetchUsers(); // refresh the list
         } catch (err) {

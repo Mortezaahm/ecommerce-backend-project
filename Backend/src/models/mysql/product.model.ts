@@ -114,7 +114,8 @@ export const getProductByIdWithCategory = async (id: number): Promise<ProductWit
     product_id: row.product_id,
     title: row.title,
     price: row.price,
-    ...(row.info && { info: row.info }),
+    info: row.info ?? "",
+    //...(row.info && { info: row.info }),
     category: {
       category_id: row.c_id,
       title: row.c_title
@@ -197,11 +198,11 @@ export const getProductsWithCategoryAndFilter = async (
   return rows.map((row) => ({
     product_id: row.product_id,
     title: row.title,
-    // info: row.info ,
+    info: row.info ?? "",
     price: row.price,
-    in_stock: Boolean(row.in_stock), // convert to boolean
+    in_stock: row.in_stock !== null ? Boolean(row.in_stock) : true, // convert to boolean
     created_at: row.created_at,
-    ...(row.info !== undefined && { info: row.info }), // only include if not null
+    // ...(row.info !== undefined && { info: row.info }), // only include if not null
     category: {
       category_id: row.c_id,
       title: row.c_title

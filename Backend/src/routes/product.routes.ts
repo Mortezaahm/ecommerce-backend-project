@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import {
-    // getAllProductsController,
+    getAllProductsController,
     getProductByIdController,
     getProductsByFilterController,
     createProductController,
@@ -15,7 +15,7 @@ import { createProductSchema, updateProductSchema } from "../validations/product
 const router = Router()
 
 // Get all products
-// router.get("/", getAllProductsController);
+router.get("/admin",authMiddleware, adminMiddleware, getAllProductsController); // for admin panel
 
 // Get all products (with filter and sorting)
 router.get('/', getProductsByFilterController)

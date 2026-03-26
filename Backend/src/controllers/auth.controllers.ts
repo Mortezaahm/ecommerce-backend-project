@@ -1,4 +1,4 @@
-import { registerUser, loginUser, updateUserService, deleteUserService } from "../services/auth.service";
+import { registerUser, loginUser } from "../services/auth.service";
 import type { Request, Response } from "express";
 
 // controllers for authentication - register
@@ -26,48 +26,5 @@ export const loginController = async (req: Request, res: Response) => {
         });
     } catch (error) {
         res.status(401).json({message: (error as Error).message});
-    }
-}
-
-// ========== **************************************** ==========
-// ========== Update Controllers Function - ADMIN ONLY ==========
-// ========== **************************************** ==========
-export const updateUserController = async (req: Request, res:Response) => {
-    const id = Number(req.params.id);
-
-    if (isNaN(id)) {
-        return res.status(400).json({message: "Invalid user id"})
-    }
-
-    try {
-        const result = await updateUserService(id, req.body);
-        res.status(200).json({
-            success: true,
-            message: result.message
-        })
-    } catch (error) {
-        res.status(400).json({
-            message: (error as Error).message
-        })
-    }
-}
-
-// ========== **************************************** ==========
-// ========== Delete Controllers Function - ADMIN ONLY ==========
-// ========== **************************************** ==========
-
-export const deleteUserController = async (req:Request, res:Response) => {
-    const id = Number(req.params.id);
-
-    try {
-        const result = await deleteUserService(id);
-        res.status(200).json({
-            success: true,
-            message: result.message
-        })
-    } catch (error) {
-        res.status(400).json({
-            message: (error as Error).message
-        })
     }
 }

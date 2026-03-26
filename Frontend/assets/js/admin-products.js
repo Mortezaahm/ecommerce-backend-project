@@ -15,13 +15,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   // function to fetch the list of products
   async function fetchProducts() {
     try {
-      const res = await fetch("/api/products", {
+      const res = await fetch("/api/products/admin", {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
 
       if (!data.success) {
-        alert("Failed to fetch products");
+        alert("Failed to fetch products...");
         return;
       }
 
@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         tr.innerHTML = `
                     <td>${product.product_id}</td>
-                    <td><input type="text" value="${product.title}" class="edit-title" data-id="${product.product_id}"></td>
+                    <td><input type="text" value="${product.title ?? ""}" class="edit-title" data-id="${product.product_id}"></td>
                     <td><input type="number" value="${product.price}" class="edit-price" data-id="${product.product_id}"></td>
                     <td>
                         <select class="edit-stock" data-id="${product.product_id}">
@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                             <option value="false" ${!product.in_stock ? "selected" : ""}>Out of Stock</option>
                         </select>
                     </td>
-                    <td><input type="text" value="${product.category.title}" class="edit-category" data-id="${product.product_id}"></td>
+                    <td><input type="text" value="${product.category?.title ?? ""}" class="edit-category" data-id="${product.product_id}"></td>
                     <td>
                         <button class="update-btn" data-id="${product.product_id}">Update</button>
                         <button class="delete-btn" data-id="${product.product_id}">Delete</button>
@@ -107,6 +107,8 @@ document.addEventListener("DOMContentLoaded", async () => {
           const data = await res.json();
           if (!data.success) throw new Error(data.message);
           alert("Product deleted successfully");
+          // const row = e.target.closest("tr");
+          // row.remove();
           fetchProducts();
         } catch (err) {
           alert(err.message);
