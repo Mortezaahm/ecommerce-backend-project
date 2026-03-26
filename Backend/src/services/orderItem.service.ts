@@ -1,11 +1,13 @@
 // logic for order items
 import type { OrderItem } from "../models/mysql/orderItem.model";
+
 import {
   createOrderItem as createOrderItemInDB,
   getOrderItemsByOrderId as getOrderItemsFromDB,
   updateOrderItem as updateOrderItemInDB,
   deleteOrderItem as removeOrderItemInDB
 } from "../models/mysql/orderItem.model";
+import { getProductById } from "../models/mysql/product.model";
 
 // Add a new order item
 export const addOrderItemService = async (orderItem: OrderItem) => {
@@ -16,6 +18,13 @@ export const addOrderItemService = async (orderItem: OrderItem) => {
   if (!quantity || quantity <= 0) throw new Error("Quantity must be > 0");
   if (price_at_order === undefined || price_at_order < 0)
     throw new Error("Price cannot be negative");
+
+  // Check if product is in stock
+  const product = await getProductById(product__id);
+  if (!product) throw new Error("Product not found");
+  if (product.in_stock === false || product.in_stock === 0) {
+    throw new Error("Product is out of stock");
+  }
 
   return await createOrderItemInDB(orderItem);
 };

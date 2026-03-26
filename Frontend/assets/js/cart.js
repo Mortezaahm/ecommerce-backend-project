@@ -418,7 +418,7 @@ function showCartToast(message = 'Produkten lades till i kundvagnen') {
 
 // Skickar order till backend
 async function placeOrder() {
-    const cart = getCart()
+    const cart = await getCart()
     if (!cart.length) return alert('Din kundvagn är tom')
 
     try {
@@ -434,7 +434,7 @@ async function placeOrder() {
         if (!user) throw new Error('Kunde inte hämta användare')
 
         // Skapa order
-        const total = getCartTotal()
+        const total = await getCartTotal()
         const orderRes = await fetch('http://localhost:3000/api/orders', {
             method: 'POST',
             headers: {
@@ -445,6 +445,7 @@ async function placeOrder() {
         })
 
         const text = await orderRes.text()
+        console.log('Order API response:', text)
         let newOrder
         try {
             newOrder = JSON.parse(text)

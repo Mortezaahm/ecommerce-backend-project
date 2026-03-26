@@ -97,6 +97,7 @@ export const getProductByIdWithCategory = async (id: number): Promise<ProductWit
       p.title,
       p.info,
       p.price,
+      p.in_stock,
       c.category_id AS c_id,
       c.title AS c_title
     FROM products p
@@ -115,7 +116,7 @@ export const getProductByIdWithCategory = async (id: number): Promise<ProductWit
     title: row.title,
     price: row.price,
     info: row.info ?? "",
-    //...(row.info && { info: row.info }),
+    in_stock: row.in_stock !== null ? Boolean(row.in_stock) : true,
     category: {
       category_id: row.c_id,
       title: row.c_title

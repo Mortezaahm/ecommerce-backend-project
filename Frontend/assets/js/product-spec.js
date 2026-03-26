@@ -43,22 +43,24 @@ async function loadSingleProduct() {
         const res = await fetch(`${API_BASE}/api/products/${productId}`)
         const product = await res.json()
         product.price = Number(product.price) || 0
-
+        console.log('Loaded product:', product)
 
         // Fetch images for this product, prefer transparent image
-        let imageSrc = '/assets/media/juice-placeholder.png';
+        let imageSrc = '/assets/media/juice-placeholder.png'
         try {
             const imgRes = await fetch(
                 `${API_BASE}/api/product-images/product/${productId}`
-            );
-            const images = await imgRes.json();
+            )
+            const images = await imgRes.json()
             if (Array.isArray(images) && images.length > 0) {
                 // Prefer image with '-trans' in the name
-                const transImg = images.find(img => img.image_name.includes('-trans'));
+                const transImg = images.find((img) =>
+                    img.image_name.includes('-trans')
+                )
                 if (transImg) {
-                    imageSrc = `/api/product-images/file/${transImg.image_name}`;
+                    imageSrc = `/api/product-images/file/${transImg.image_name}`
                 } else {
-                    imageSrc = `/api/product-images/file/${images[0].image_name}`;
+                    imageSrc = `/api/product-images/file/${images[0].image_name}`
                 }
             }
         } catch (e) {}
@@ -73,6 +75,7 @@ async function loadSingleProduct() {
 
 // Renderar produktkort
 function renderProduct(product, ratingData, imageSrc) {
+    const inStock = product.in_stock !== undefined ? product.in_stock : true
     productDetail.innerHTML = `
         <div class="product-detail-card">
             <div class="product-detail-image">
@@ -89,6 +92,9 @@ function renderProduct(product, ratingData, imageSrc) {
                 <p class="category">Kategori: ${product.category?.title || 'Okänd'}</p>
                 <p class="description">${product.info || 'Ingen beskrivning'}</p>
                 <div class="price">${product.price.toFixed(2)} kr</div>
+                <div class="stock-status">
+                    <strong>Lagersaldo:</strong> <span id="stockValue">${inStock ? 'I lager' : 'Slut i lager'}</span>
+                </div>
 
                 <div class="cart-controls">
                     <div class="quantity-selector">
@@ -96,19 +102,19 @@ function renderProduct(product, ratingData, imageSrc) {
                         <span id="quantity">1</span>
                         <button id="increaseQty">+</button>
                     </div>
-                    <button id="addToCartBtn" class="add-to-cart-btn">
-                        Lägg i kundvagn
+                    <button id="addToCartBtn" class="add-to-cart-btn" ${!inStock ? 'disabled' : ''}>
+                        ${inStock ? 'Lägg i kundvagn' : 'Slut i lager'}
                     </button>
                 </div>
             </div>
         </div>
     `
 
-    setupProductActions(product)
+    setupProductActions(product, inStock)
 }
 
 // Hanterar knapptryck för kvantitet och "lägg till i kundvagn"
-function setupProductActions(product) {
+function setupProductActions(product, inStock) {
     const decreaseBtn = document.getElementById('decreaseQty')
     const increaseBtn = document.getElementById('increaseQty')
     const quantityEl = document.getElementById('quantity')
@@ -129,6 +135,10 @@ function setupProductActions(product) {
     })
 
     addToCartBtn?.addEventListener('click', () => {
+        if (!inStock) {
+            alert('Produkten är slut i lager och kan inte beställas.')
+            return
+        }
         addToCart(product, quantity)
         showCartToast(`${product.title} lades till i kundvagnen`)
     })
