@@ -183,7 +183,6 @@ async function removeFromCart(productId) {
     if (token && userId) {
         let backendWorked = false
         try {
-            // Get cartId from backend
             const cartRes = await fetch(
                 `http://localhost:3000/api/cart/user/${userId}`,
                 {
@@ -193,7 +192,6 @@ async function removeFromCart(productId) {
             if (cartRes.ok) {
                 const cartData = await cartRes.json()
                 if (cartData && cartData.cart_id) {
-                    // Find cart item id for this product
                     const item = (cartData.items || []).find(
                         (i) => String(i.product_id) === id
                     )
@@ -214,9 +212,8 @@ async function removeFromCart(productId) {
             refreshCartUI()
             return
         }
-        // If backend failed, fall through to localStorage
+        // Om backend failar, kör på localstorage
     }
-    // Not logged in or backend failed: localStorage
     const cart = (await getCart()).filter((item) => item.id !== id)
     saveCart(cart)
     refreshCartUI()
@@ -230,7 +227,6 @@ async function updateQuantity(productId, newQuantity) {
     if (token && userId) {
         let backendWorked = false
         try {
-            // Get cartId from backend
             const cartRes = await fetch(
                 `http://localhost:3000/api/cart/user/${userId}`,
                 {
@@ -240,7 +236,6 @@ async function updateQuantity(productId, newQuantity) {
             if (cartRes.ok) {
                 const cartData = await cartRes.json()
                 if (cartData && cartData.cart_id) {
-                    // Find cart item id for this product
                     const item = (cartData.items || []).find(
                         (i) => String(i.product_id) === id
                     )
@@ -279,9 +274,8 @@ async function updateQuantity(productId, newQuantity) {
             refreshCartUI()
             return
         }
-        // If backend failed, fall through to localStorage
     }
-    // Not logged in or backend failed: localStorage
+    // Inte inloggad eller backend failade: localStorage
     const cart = await getCart()
     const item = cart.find((p) => p.id === id)
     if (!item) return
