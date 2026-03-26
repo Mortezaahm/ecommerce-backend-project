@@ -44,8 +44,27 @@ async function loadSingleProduct() {
         const product = await res.json()
         product.price = Number(product.price) || 0
 
+
+        // Fetch images for this product, prefer transparent image
+        let imageSrc = '/assets/media/juice-placeholder.png';
+        try {
+            const imgRes = await fetch(
+                `${API_BASE}/api/product-images/product/${productId}`
+            );
+            const images = await imgRes.json();
+            if (Array.isArray(images) && images.length > 0) {
+                // Prefer image with '-trans' in the name
+                const transImg = images.find(img => img.image_name.includes('-trans'));
+                if (transImg) {
+                    imageSrc = `/api/product-images/file/${transImg.image_name}`;
+                } else {
+                    imageSrc = `/api/product-images/file/${images[0].image_name}`;
+                }
+            }
+        } catch (e) {}
+
         const ratingData = await loadAverageRating()
-        renderProduct(product, ratingData)
+        renderProduct(product, ratingData, imageSrc)
     } catch (err) {
         console.error(err)
         productDetail.innerHTML = '<p>Kunde inte hämta produkten.</p>'
@@ -53,11 +72,11 @@ async function loadSingleProduct() {
 }
 
 // Renderar produktkort
-function renderProduct(product, ratingData) {
+function renderProduct(product, ratingData, imageSrc) {
     productDetail.innerHTML = `
         <div class="product-detail-card">
             <div class="product-detail-image">
-                <img src="${product.image || '/assets/media/juice-placeholder.png'}" alt="${product.title}">
+                <img src="${imageSrc}" alt="${product.title}">
             </div>
 
             <div class="product-detail-info">
@@ -77,7 +96,6 @@ function renderProduct(product, ratingData) {
                         <span id="quantity">1</span>
                         <button id="increaseQty">+</button>
                     </div>
-
                     <button id="addToCartBtn" class="add-to-cart-btn">
                         Lägg i kundvagn
                     </button>

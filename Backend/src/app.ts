@@ -12,7 +12,7 @@ import cartItemRoutes from './routes/cartItem.routes'
 import orderRoutes from './routes/order.routes'
 import orderItemRoutes from './routes/orderItem.routes'
 
-// import productImageRoutes from './routes/productImage.routes'
+import productImageRoutes from './routes/productimage.routes'
 
 import reviewRoutes from './routes/review.routes'
 
@@ -22,6 +22,12 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 const app = express()
+
+// Serve product images from /public/product-images
+app.use(
+    '/api/product-images/file',
+    express.static(path.join(__dirname, '../public/product-images'))
+)
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../../Frontend/index.html'))
@@ -46,7 +52,7 @@ app.use('/api/orders', orderRoutes)
 app.use('/api/order-items', orderItemRoutes)
 
 // ProductImages
-// app.use('/api/product-images', productImageRoutes)
+app.use('/api/product-images', productImageRoutes)
 
 // Reviews
 app.use('/api/reviews', reviewRoutes)

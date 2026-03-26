@@ -36,10 +36,12 @@ main {
 }
 
 .product-detail-image img {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 5rem;
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+    padding: 0.5rem;
 }
 
 .product-detail-info {
@@ -225,9 +227,10 @@ main {
 
     .product-detail-image img {
         max-width: 100%;
-        width: 280px;
+        width: auto;
         height: auto;
-        padding: 0;
+        object-fit: contain;
+        padding: 0.5rem;
     }
 
     .product-detail-info {
