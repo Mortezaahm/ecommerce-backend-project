@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Admin Panel - Users</title>
+
+    <!-- Bootstrap 5 -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+    />
+
+    <!-- Optional custom CSS -->
+    <link rel="stylesheet" href="/assets/css/auth.css" />
+  </head>
+
+  <body class="bg-light">
+    <div class="container mt-4">
+      <!-- Breadcrumb -->
+      <nav class="mb-3">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="./admin.html">Dashboard</a></li>
+          <li class="breadcrumb-item active">Categories</li>
+        </ol>
+      </nav>
+
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-3">Categories</h2>
+        <button class="btn btn-success" id="refresh-btn">
+          <i class="bi bi-arrow-clockwise"></i> Refresh
+        </button>
+      </div>
+
+      <!-- Table -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-body p-0">
+          <table class="table table-striped mb-0" id="categories-table">
+            <thead class="table-dark">
+              <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Add Form -->
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5>Add Category</h5>
+          <form id="add-category-form" class="row g-3">
+            <div class="col-md-8">
+              <input
+                type="text"
+                id="title"
+                class="form-control"
+                placeholder="Title"
+                required
+              />
+            </div>
+            <div class="col-md-4 d-grid">
+              <button class="btn btn-primary">Add</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Your JS -->
+    <script src="/assets/js/admin-categories.js"></script>
+
+    <script>
+      // Refresh button functionality
+      document.getElementById("refresh-btn")?.addEventListener("click", () => {
+        location.reload();
+      });
+    </script>
+  </body>
+</html>
