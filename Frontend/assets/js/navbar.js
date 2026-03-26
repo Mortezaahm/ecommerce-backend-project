@@ -13,13 +13,23 @@ async function loadNavbarProducts() {
         productsList.innerHTML = ''
 
         // Visa max 6 produkter i mega-menyn
-        products.slice(0, 6).forEach((product) => {
+        for (const product of products.slice(0, 6)) {
+            let imageSrc = '/assets/media/juice-placeholder.png'
+            try {
+                const imgRes = await fetch(
+                    `http://localhost:3000/api/product-images/product/${product.product_id}`
+                )
+                const images = await imgRes.json()
+                if (Array.isArray(images) && images.length > 0) {
+                    imageSrc = `/api/product-images/file/${images[0].image_name}`
+                }
+            } catch (e) {}
+
             const col = document.createElement('div')
             col.className = 'col-sm-6 col-lg'
-
             col.innerHTML = `
                 <a href="/pages/product-spec.html?id=${product.product_id}" class="mega-product-card">
-                    <img src="${product.image || '/assets/media/juice-placeholder.png'}" alt="${product.title}" class="img-fluid mega-product-img" />
+                    <img src="${imageSrc}" alt="${product.title}" class="img-fluid mega-product-img" />
                     <div class="mega-product-body">
                         <h6 class="mb-1">${product.title}</h6>
                         <p class="small mb-0">${product.info ? product.info.substring(0, 80) : 'Ingen beskrivning.'}</p>
@@ -27,7 +37,7 @@ async function loadNavbarProducts() {
                 </a>
             `
             productsList.appendChild(col)
-        })
+        }
     } catch (err) {
         productsList.innerHTML =
             '<div class="col-12 text-danger text-center">Kunde inte ladda produkter</div>'

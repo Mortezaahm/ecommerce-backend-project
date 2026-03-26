@@ -2,6 +2,7 @@ import express from 'express'
 import cors from 'cors'
 
 import authRoutes from './routes/auth.routes'
+import userRoutes from './routes/user.routes'
 import productRoutes from './routes/product.routes'
 import categoryRoutes from './routes/category.routes'
 
@@ -11,7 +12,7 @@ import cartItemRoutes from './routes/cartItem.routes'
 import orderRoutes from './routes/order.routes'
 import orderItemRoutes from './routes/orderItem.routes'
 
-import productImageRoutes from './routes/productImage.routes'
+import productImageRoutes from './routes/productimage.routes'
 
 import reviewRoutes from './routes/review.routes'
 
@@ -22,6 +23,12 @@ const __dirname = path.dirname(__filename)
 
 const app = express()
 
+// Serve product images from /public/product-images
+app.use(
+    '/api/product-images/file',
+    express.static(path.join(__dirname, '../public/product-images'))
+)
+
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../../Frontend/index.html'))
 })
@@ -30,8 +37,9 @@ app.use(cors())
 app.use(express.json())
 app.use(express.static(path.join(__dirname, '../../Frontend')))
 
-// Auth, Products, Categories
+// Auth, User, Products, Categories
 app.use('/api/auth', authRoutes)
+app.use('/api/users', userRoutes)
 app.use('/api/products', productRoutes)
 app.use('/api/categories', categoryRoutes)
 

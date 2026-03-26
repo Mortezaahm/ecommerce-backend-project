@@ -32,21 +32,44 @@ function addToCart(product, quantity = 1) {
     const id = String(product.id ?? product.product_id)
     const existing = cart.find((item) => item.id === id)
 
-    if (existing) {
-        existing.quantity += quantity
-    } else {
-        cart.push({
-            id,
-            title: product.title,
-            price: Number(product.price || 0),
-            image: product.image || '/assets/media/juice-placeholder.png',
-            quantity
-        })
+    async function getImageSrc() {
+        let imageSrc = '/assets/media/juice-placeholder.png'
+        try {
+            const res = await fetch(
+                `http://localhost:3000/api/product-images/product/${id}`
+            )
+            const images = await res.json()
+            if (Array.isArray(images) && images.length > 0) {
+                const transImg = images.find((img) =>
+                    img.image_name.includes('-trans')
+                )
+                if (transImg) {
+                    imageSrc = `/api/product-images/file/${transImg.image_name}`
+                } else {
+                    imageSrc = `/api/product-images/file/${images[0].image_name}`
+                }
+            }
+        } catch (e) {}
+        return imageSrc
     }
 
-    saveCart(cart)
-    refreshCartUI()
-    showCartToast(`${product.title} lades till i kundvagnen`)
+    ;(async () => {
+        const imageSrc = await getImageSrc()
+        if (existing) {
+            existing.quantity += quantity
+        } else {
+            cart.push({
+                id,
+                title: product.title,
+                price: Number(product.price || 0),
+                image: imageSrc,
+                quantity
+            })
+        }
+        saveCart(cart)
+        refreshCartUI()
+        showCartToast(`${product.title} lades till i kundvagnen`)
+    })()
 }
 
 // Tar bort produkt från kundvagnen
