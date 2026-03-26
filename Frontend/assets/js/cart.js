@@ -1,20 +1,24 @@
-
+// Hämtar kundvagnen från localStorage, returnerar array (tom om ingen)
 function getCart() {
     return JSON.parse(localStorage.getItem('cart')) || []
 }
 
+// Sparar kundvagnen i localStorage
 function saveCart(cart) {
     localStorage.setItem('cart', JSON.stringify(cart))
 }
 
+// Formaterar pris till sträng med 2 decimaler och kr
 function formatPrice(price) {
     return `${Number(price || 0).toFixed(2)} kr`
 }
 
+// Räknar total antal produkter i kundvagnen
 function getCartCount() {
     return getCart().reduce((sum, item) => sum + item.quantity, 0)
 }
 
+// Räknar totalpris för kundvagnen
 function getCartTotal() {
     return getCart().reduce(
         (sum, item) => sum + Number(item.price || 0) * item.quantity,
@@ -22,7 +26,7 @@ function getCartTotal() {
     )
 }
 
-// ======== CART ACTIONS ========
+// Lägger till produkt i kundvagnen (eller ökar kvantitet om redan finns)
 function addToCart(product, quantity = 1) {
     const cart = getCart()
     const id = String(product.id ?? product.product_id)
@@ -35,7 +39,7 @@ function addToCart(product, quantity = 1) {
             id,
             title: product.title,
             price: Number(product.price || 0),
-            image: product.image || 'https://via.placeholder.com/150',
+            image: product.image || '/assets/media/juice-placeholder.png',
             quantity
         })
     }
@@ -45,6 +49,7 @@ function addToCart(product, quantity = 1) {
     showCartToast(`${product.title} lades till i kundvagnen`)
 }
 
+// Tar bort produkt från kundvagnen
 function removeFromCart(productId) {
     const id = String(productId)
     const cart = getCart().filter((item) => item.id !== id)
@@ -52,6 +57,7 @@ function removeFromCart(productId) {
     refreshCartUI()
 }
 
+// Uppdaterar kvantitet för en produkt, tar bort om 0
 function updateQuantity(productId, newQuantity) {
     const id = String(productId)
     const cart = getCart()
@@ -68,12 +74,14 @@ function updateQuantity(productId, newQuantity) {
     refreshCartUI()
 }
 
+// Renderar siffran på kundvagnsikonen
 function renderCartBadge() {
     const badge = document.querySelector('.cart-btn-badge')
     if (!badge) return
     badge.textContent = getCartCount()
 }
 
+// Renderar dropdown-menyn för kundvagnen i navbaren
 function renderNavbarCart() {
     const container = document.getElementById('cartItems')
     const totalEl = document.getElementById('cartTotal')
@@ -109,6 +117,7 @@ function renderNavbarCart() {
     totalEl.textContent = formatPrice(getCartTotal())
 }
 
+// Renderar sidan för kundvagnen (cart.html)
 function renderCartPage() {
     const itemsEl = document.getElementById('cartPageItems')
     const totalEl = document.getElementById('cartPageTotal')
@@ -152,12 +161,13 @@ function renderCartPage() {
         .join('')
 }
 
+// Initierar klick-events för + / - / ta bort
 let cartEventsInitialized = false
 function setupCartEvents() {
     if (cartEventsInitialized) return
     cartEventsInitialized = true
 
-    document.addEventListener('click', function (e) {
+    document.addEventListener('click', (e) => {
         const target = e.target
         if (!(target instanceof HTMLElement)) return
         const productId = target.dataset.id
@@ -175,12 +185,14 @@ function setupCartEvents() {
     })
 }
 
+// Uppdaterar all kundvagns-UI: badge, dropdown och sida
 function refreshCartUI() {
     renderCartBadge()
     renderNavbarCart()
     renderCartPage()
 }
 
+// Visar toast-meddelande när produkt läggs till
 function showCartToast(message = 'Produkten lades till i kundvagnen') {
     const toast = document.getElementById('cartToast')
     if (!toast) return
@@ -189,7 +201,83 @@ function showCartToast(message = 'Produkten lades till i kundvagnen') {
     setTimeout(() => toast.classList.remove('show'), 2500)
 }
 
+// Skickar order till backend
+async function placeOrder() {
+    const cart = getCart()
+    if (!cart.length) return alert('Din kundvagn är tom')
+
+    try {
+        const token = localStorage.getItem('token')
+        if (!token) throw new Error('Ingen användare inloggad')
+
+        // Hämta användardata
+        const userRes = await fetch('http://localhost:3000/api/auth/me', {
+            headers: { Authorization: `Bearer ${token}` }
+        })
+        const userData = await userRes.json()
+        const user = userData.user || userData.data?.user
+        if (!user) throw new Error('Kunde inte hämta användare')
+
+        // Skapa order
+        const total = getCartTotal()
+        const orderRes = await fetch('http://localhost:3000/api/orders', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify({ userId: user.id, totalPrice: total })
+        })
+
+        const text = await orderRes.text()
+        let newOrder
+        try {
+            newOrder = JSON.parse(text)
+        } catch (err) {
+            console.error('Kunde inte parsa JSON från backend:', err)
+            throw new Error('Order skapades inte! Backend skickade inte JSON')
+        }
+
+        const orderId = newOrder.orderId || newOrder.insertId || newOrder.id
+        if (!orderId) throw new Error('Order skapades inte!')
+
+        // Skapa order-items
+        for (const item of cart) {
+            const res = await fetch('http://localhost:3000/api/order-items', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    order_id: Number(orderId),
+                    order__id: Number(orderId),
+                    product_id: Number(item.id),
+                    product__id: Number(item.id),
+                    quantity: item.quantity,
+                    price_at_order: item.price
+                })
+            })
+            if (!res.ok) {
+                const errText = await res.text()
+                throw new Error('Order item kunde inte skapas: ' + errText)
+            }
+        }
+
+        // Töm kundvagn
+        localStorage.removeItem('cart')
+        refreshCartUI()
+        window.location.href = '/pages/member.html'
+    } catch (err) {
+        console.error('placeOrder error:', err)
+        alert(err.message || 'Kunde inte lägga order. Kolla konsolen.')
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+    const btn = document.getElementById('place-order-btn')
+    if (btn) btn.addEventListener('click', placeOrder)
+
     setupCartEvents()
     refreshCartUI()
 })

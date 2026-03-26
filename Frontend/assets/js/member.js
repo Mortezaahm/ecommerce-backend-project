@@ -1,105 +1,96 @@
+// Hämta element på sidan
 const memberName = document.getElementById('member-name')
 const reviewsContainer = document.getElementById('member-reviews')
 const ordersContainer = document.getElementById('member-orders')
 const API_BASE = 'http://localhost:3000'
 
-// ====== Auth helpers ======
+// Hämtar token från localStorage
 function getToken() {
     return localStorage.getItem('token')
 }
 
+// Kontrollerar om användaren är inloggad, annars skickas den till login
 function requireAuth() {
     const token = getToken()
     if (!token) {
-        window.location.href = '../pages/login.html'
+        window.location.href = '/pages/login.html'
         return false
     }
     return true
 }
 
-// ====== LOAD MEMBER PAGE ======
+// Laddar medlemssidan med användarinfo, recensioner och beställningar
 async function loadMemberPage() {
     if (!requireAuth()) return
 
     try {
         const token = getToken()
-        // Hämta användardata
         const res = await fetch(`${API_BASE}/api/auth/me`, {
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`
             }
         })
+
         const data = await res.json()
-        if (!res.ok)
-            throw new Error(data.message || 'Kunde inte hämta användardata')
+        if (!res.ok) throw new Error()
 
         const user = data.user || data.data?.user
-        if (!user) throw new Error('Ogiltigt svar från servern: ingen user')
 
-        if (memberName) memberName.textContent = user.name || 'Medlem'
-        localStorage.setItem('name', user.name || '')
-        localStorage.setItem('role', user.role || '')
+        // Visa användarens namn på sidan
+        memberName.textContent = user.name || 'Medlem'
 
-        // Hämta reviews och orders
+        // Ladda recensioner och beställningar
         await loadUserReviews(user.id)
         await loadUserOrders(user.id)
     } catch (err) {
         console.error(err)
-        alert('Sessionen är ogiltig, logga in igen')
         localStorage.clear()
-        window.location.href = '../pages/login.html'
+        window.location.href = '/pages/login.html'
     }
 }
 
-// ====== LOGOUT ======
+// Konfigurera logout-knappen
 function setupLogout() {
     const logoutBtn = document.getElementById('member-logout-btn')
     if (!logoutBtn) return
 
     logoutBtn.addEventListener('click', () => {
         localStorage.clear()
-        window.location.href = '../pages/login.html'
+        window.location.href = '/pages/login.html'
     })
 }
 
-// ====== LOAD USER REVIEWS ======
+// Hämtar alla recensioner för användaren och mappar dem till produkter
 async function loadUserReviews(userId) {
-    if (!reviewsContainer) return
     try {
         const token = getToken()
 
-        // Hämta reviews
         const res = await fetch(`${API_BASE}/api/reviews/user/${userId}`, {
-            headers: token ? { Authorization: `Bearer ${token}` } : {}
+            headers: { Authorization: `Bearer ${token}` }
         })
+
         let reviews = await res.json()
 
-        // Hämta alla produkter för mapping
-        const productsRes = await fetch(`${API_BASE}/api/products`, {
-            headers: { 'Content-Type': 'application/json' }
-        })
+        const productsRes = await fetch(`${API_BASE}/api/products`)
         const products = await productsRes.json()
 
-        // Mappa productId -> produkt
-        const productsMap = {}
-        products.forEach((p) => {
-            productsMap[p.product_id] = p
-        })
+        // Skapa en mappning mellan product_id och produktinfo
+        const map = {}
+        products.forEach((p) => (map[p.product_id] = p))
 
-        // Lägg till produktdata i reviews
         reviews = reviews.map((r) => ({
             ...r,
-            product: productsMap[r.productId] || null
+            product: map[r.productId]
         }))
 
         renderUserReviews(reviews)
     } catch (err) {
         console.error(err)
-        reviewsContainer.innerHTML = '<p>Kunde inte ladda dina recensioner</p>'
     }
 }
 
+// Renderar recensioner på sidan
 function renderUserReviews(reviews) {
     if (!reviews.length) {
         reviewsContainer.innerHTML = '<p>Inga recensioner ännu</p>'
@@ -111,11 +102,29 @@ function renderUserReviews(reviews) {
             (r) => `
         <div class="review-card" data-review-id="${r._id}">
             <div class="review-header">
-                ${renderStars(r.rating)}
+                <span class="stars">${renderStars(r.rating)}</span>
                 <span>${r.product?.title || 'Produkt okänd'}</span>
             </div>
-            <p>${r.comment}</p>
-            <small>Datum: ${new Date(r.createdAt).toLocaleDateString()}</small>
+
+            <p class="review-text">${r.comment}</p>
+
+            <div class="edit-mode" style="display:none;">
+                <textarea class="edit-comment">${r.comment}</textarea>
+
+                <select class="edit-rating">
+                    ${[1, 2, 3, 4, 5]
+                        .map(
+                            (n) =>
+                                `<option value="${n}" ${n === r.rating ? 'selected' : ''}>${n}</option>`
+                        )
+                        .join('')}
+                </select>
+
+                <button class="save-review-btn">Spara</button>
+            </div>
+
+            <small>${new Date(r.createdAt).toLocaleDateString()}</small>
+
             <div class="review-actions">
                 <button class="edit-review-btn">Redigera</button>
                 <button class="delete-review-btn">Ta bort</button>
@@ -128,21 +137,27 @@ function renderUserReviews(reviews) {
     setupReviewActions()
 }
 
+// Funktionalitet för att redigera, spara och ta bort recensioner
 function setupReviewActions() {
+    // Redigera recension
     document.querySelectorAll('.edit-review-btn').forEach((btn) => {
-        btn.addEventListener('click', async (e) => {
-            const reviewCard = e.target.closest('.review-card')
-            const reviewId = reviewCard.dataset.reviewId
-            const newComment = prompt('Skriv ny kommentar:')
-            const newRating = parseInt(prompt('Ange nytt betyg (1-5):'), 10)
+        btn.addEventListener('click', (e) => {
+            const card = e.target.closest('.review-card')
+            card.querySelector('.review-text').style.display = 'none'
+            card.querySelector('.edit-mode').style.display = 'block'
+        })
+    })
 
-            if (
-                !newComment ||
-                isNaN(newRating) ||
-                newRating < 1 ||
-                newRating > 5
+    // Spara ändrad recension
+    document.querySelectorAll('.save-review-btn').forEach((btn) => {
+        btn.addEventListener('click', async (e) => {
+            const card = e.target.closest('.review-card')
+            const reviewId = card.dataset.reviewId
+            const newComment = card.querySelector('.edit-comment').value
+            const newRating = parseInt(
+                card.querySelector('.edit-rating').value,
+                10
             )
-                return
 
             try {
                 const token = getToken()
@@ -158,35 +173,33 @@ function setupReviewActions() {
                     })
                 })
 
-                if (!res.ok) throw new Error('Kunde inte uppdatera recensionen')
-                alert('Recension uppdaterad!')
-                loadMemberPage()
+                if (!res.ok) throw new Error()
+
+                card.querySelector('.review-text').textContent = newComment
+                card.querySelector('.stars').innerHTML = renderStars(newRating)
+                card.querySelector('.review-text').style.display = 'block'
+                card.querySelector('.edit-mode').style.display = 'none'
             } catch (err) {
                 console.error(err)
-                alert('Fel vid uppdatering av recension')
             }
         })
     })
 
+    // Ta bort recension
     document.querySelectorAll('.delete-review-btn').forEach((btn) => {
         btn.addEventListener('click', async (e) => {
-            if (!confirm('Är du säker på att du vill ta bort recensionen?'))
-                return
-
-            const reviewCard = e.target.closest('.review-card')
-            const reviewId = reviewCard.dataset.reviewId
+            const card = e.target.closest('.review-card')
+            const reviewId = card.dataset.reviewId
 
             try {
                 const token = getToken()
                 const res = await fetch(`${API_BASE}/api/reviews/${reviewId}`, {
                     method: 'DELETE',
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
+                    headers: { Authorization: `Bearer ${token}` }
                 })
 
-                if (!res.ok) throw new Error('Kunde inte ta bort recensionen')
-                loadMemberPage()
+                if (!res.ok) throw new Error()
+                card.remove()
             } catch (err) {
                 console.error(err)
             }
@@ -194,22 +207,22 @@ function setupReviewActions() {
     })
 }
 
-// ====== LOAD USER ORDERS ======
+// Hämtar alla beställningar för användaren
 async function loadUserOrders(userId) {
-    if (!ordersContainer) return
     try {
         const token = getToken()
         const res = await fetch(`${API_BASE}/api/orders/user/${userId}`, {
-            headers: token ? { Authorization: `Bearer ${token}` } : {}
+            headers: { Authorization: `Bearer ${token}` }
         })
+
         const orders = await res.json()
         renderUserOrders(orders)
     } catch (err) {
         console.error(err)
-        ordersContainer.innerHTML = '<p>Kunde inte ladda dina beställningar</p>'
     }
 }
 
+// Renderar beställningar på sidan
 function renderUserOrders(orders) {
     if (!orders.length) {
         ordersContainer.innerHTML = '<p>Inga beställningar ännu</p>'
@@ -220,29 +233,24 @@ function renderUserOrders(orders) {
         .map(
             (order) => `
         <div class="order-card">
-            <div class="order-header">
-                <span>Order #${order.id}</span>
-                <span>Status: ${order.status}</span>
-            </div>
-            <ul>
-                ${order.items.map((item) => `<li>${item.quantity} × ${item.product?.title || 'Okänd produkt'}</li>`).join('')}
-            </ul>
-            <div class="order-total">Totalt: ${order.total.toFixed(2)} kr</div>
-            <small>Datum: ${new Date(order.createdAt).toLocaleDateString()}</small>
+            <span>Order #${order.order_id}</span>
+            <div>${order.total_price?.toFixed ? order.total_price.toFixed(2) : order.total_price} kr</div>
         </div>
     `
         )
         .join('')
 }
 
-// ====== STARS HELPER ======
+// Renderar stjärnor baserat på betyg
 function renderStars(rating) {
     let stars = ''
-    for (let i = 1; i <= 5; i++) stars += i <= rating ? '★' : '☆'
-    return `<span class="stars">${stars}</span>`
+    for (let i = 1; i <= 5; i++) {
+        stars += i <= rating ? '★' : '☆'
+    }
+    return stars
 }
 
-// ====== INIT ======
+// Körs när header och footer är inlästa
 document.addEventListener('componentsLoaded', () => {
     setupLogout()
     loadMemberPage()
