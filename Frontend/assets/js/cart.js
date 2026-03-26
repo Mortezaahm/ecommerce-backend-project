@@ -490,9 +490,21 @@ async function placeOrder() {
     }
 }
 
+//Om du vill lägga order men inte är inloggad
 document.addEventListener('DOMContentLoaded', () => {
     const btn = document.getElementById('place-order-btn')
-    if (btn) btn.addEventListener('click', placeOrder)
+    const token = localStorage.getItem('token')
+    if (btn) {
+        if (!token) {
+            btn.textContent = 'Logga in för att lägga order'
+            btn.addEventListener('click', () => {
+                localStorage.setItem('redirectAfterLogin', '/pages/cart.html')
+                window.location.href = '/pages/login.html'
+            })
+        } else {
+            btn.addEventListener('click', placeOrder)
+        }
+    }
 
     setupCartEvents()
     refreshCartUI()

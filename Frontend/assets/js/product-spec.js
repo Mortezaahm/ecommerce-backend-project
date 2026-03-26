@@ -290,8 +290,21 @@ function toggleReviewFormVisibility() {
     if (!isLoggedIn()) {
         reviewFormContainer.innerHTML = `
             <p class="login-warning">
-                Du måste <a href="/pages/login.html">logga in</a> för att skriva en review.
+                Du måste <a href="/pages/login.html" id="review-login-link" style="font-weight:bold;color:#111;text-decoration:underline;">logga in</a> för att skriva en review.
             </p>
         `
+        setTimeout(() => {
+            const loginLink = document.getElementById('review-login-link')
+            if (loginLink) {
+                loginLink.addEventListener('click', (e) => {
+                    e.preventDefault()
+                    localStorage.setItem(
+                        'redirectAfterLogin',
+                        window.location.pathname + window.location.search
+                    )
+                    window.location.href = '/pages/login.html'
+                })
+            }
+        }, 0)
     }
 }

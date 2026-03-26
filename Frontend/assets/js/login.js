@@ -54,7 +54,13 @@ form.addEventListener('submit', async (e) => {
         if (role === 'admin') {
             window.location.href = '/pages/admin.html'
         } else {
-            window.location.href = '/pages/member.html'
+            const redirectTarget = localStorage.getItem('redirectAfterLogin')
+            if (redirectTarget && redirectTarget !== '/pages/login.html') {
+                localStorage.removeItem('redirectAfterLogin')
+                window.location.href = redirectTarget
+            } else {
+                window.location.href = '/pages/member.html'
+            }
         }
     } catch (error) {
         console.error(error)
