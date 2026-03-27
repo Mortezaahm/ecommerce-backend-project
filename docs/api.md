@@ -132,15 +132,13 @@ json
 =========\***\*\*\*\*\*\***==========
 =========\***\*\*\*\*\*\***==========
 
-// Det kommer sen
 Products API
-Orders API
-Cart API
-Admin API
-
-till exempel:
 
 GET /products
+
+Admin only ...
 POST /products
 PUT /products/:id
 DELETE /products/:id
+
+Orders API -- admin only
