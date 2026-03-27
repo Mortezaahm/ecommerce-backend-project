@@ -1,8 +1,9 @@
 // logic for orders
-import type { Order, OrderItem } from "../models/mysql/order.model";
-import type { OrderItem as OrderItemModel } from "../models/mysql/orderitem.model";
+import type { Order } from "../models/mysql/order.model";
+import type { OrderItem as OrderItemModel } from "../models/mysql/orderItem.model";
 
 import {
+  getAllOrdersFromDB,
   createOrder as createOrderInDB,
   getOrderById as getOrderFromDB,
   getOrdersByUserId as getOrdersFromDB,
@@ -15,7 +16,13 @@ import {
   getOrderItemsByOrderId as getOrderItemsFromDB,
   updateOrderItem as updateOrderItemInDB,
   deleteOrderItem as deleteOrderItemInDB
-} from "../models/mysql/orderitem.model";
+} from "../models/mysql/orderItem.model";
+
+// Get all orders
+
+export const getAllOrdersService = async () => {
+  return await getAllOrdersFromDB();
+}
 
 // Create a new order
 export const createOrderService = async (userId: number, totalPrice: number) => {

@@ -1,6 +1,7 @@
 // controllers for orders
 import type { Request, Response } from "express";
 import {
+  getAllOrdersService,
   createOrderService,
   getOrderService,
   getOrdersByUserService,
@@ -11,6 +12,16 @@ import {
   updateOrderItemService,
   removeOrderItemService
 } from "../services/order.service";
+
+// Get all orders
+export const getAllOrders = async (req: Request, res: Response) => {
+  try {
+    const orders = await getAllOrdersService();
+    res.json(orders);
+  } catch (err: any) {
+    res.status(400).json({ error: err.message });
+  }
+};
 
 // Create a new order
 export const createOrder = async (req: Request, res: Response) => {

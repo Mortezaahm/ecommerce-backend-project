@@ -1,6 +1,7 @@
 // route for orders
 import express from "express";
 import {
+  getAllOrders,
   createOrder,
   getOrder,
   getOrdersByUser,
@@ -13,6 +14,9 @@ import {
 } from "../controllers/order.controllers";
 
 const router = express.Router();
+
+// get all orders
+router.get("/", getAllOrders);
 
 // Orders endpoints
 router.post("/", createOrder);

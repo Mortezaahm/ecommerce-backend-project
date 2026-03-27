@@ -9,6 +9,12 @@ export interface Order {
   total_price?: number;
 }
 
+// get all orders
+export const getAllOrdersFromDB = async () => {
+  const [rows]: any = await pool.execute("SELECT o.*, u.name as user_name FROM orders o LEFT JOIN users u ON o.user_id = u.id");
+  return rows;
+};
+
 // create order
 export const createOrder = async (order: Order): Promise<number> => {
   const { user_id, total_price } = order;
