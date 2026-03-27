@@ -1,0 +1,63 @@
+// logic for cart
+import { getCartByUserId as getCartFromDB, createCart as createCartInDB } from "../models/mysql/cart.model";
+import {
+  createCartItem as addCartItemInDB,
+  updateCartItem as updateCartItemQuantityInDB,
+  deleteCartItem as removeCartItemInDB,
+  getCartItemsByCartId as getCartItemsFromDB
+} from "../models/mysql/cartitem.model";
+
+import type { CartItem } from "../models/mysql/cartitem.model";
+
+// Get all cart items for a user
+export const getCartService = async (userId: number): Promise<CartItem[]> => {
+    if (!userId || userId <= 0) throw new Error("Invalid user id");
+    // return await getCartItemsFromDB(userId);
+    const cart = await getCartFromDB(userId);
+    if (!cart) return []; // No cart found, return empty array
+
+    const items = await getCartItemsFromDB(cart.cart_id!);
+    return items;
+}
+
+// Create a new cart for a user
+export const createCartService = async (userId: number) => {
+    if (!userId || userId <= 0) throw new Error("Invalid user id");
+    return await createCartInDB(userId);
+}
+
+// Add an item to a cart
+export const addCartItemService = async (
+    cartId: number,
+    productId: number,
+    quantity: number,
+    price: number
+) => {
+    if (!cartId || cartId <= 0) throw new Error("Invalid cart id");
+    if (!productId || productId <= 0) throw new Error("Invalid product id");
+    if (!quantity || quantity <= 0) throw new Error("Quantity must be > 0");
+    if (!price || price < 0) throw new Error("Price cannot be negative");
+
+    const cartItem: CartItem = {
+        cart_id: cartId,
+        product_id: productId,
+        quantity,
+        price_at_added_time: price
+    };
+
+    return await addCartItemInDB(cartItem);
+}
+
+// Update quantity of a cart item
+export const updateCartItemQuantityService = async (cartItemId: number, quantity: number) => {
+    if (!cartItemId || cartItemId <= 0) throw new Error("Invalid cart item id");
+    if (!quantity || quantity <= 0) throw new Error("Quantity must be > 0");
+
+    return await updateCartItemQuantityInDB(cartItemId, { quantity });
+}
+
+// Remove an item from the cart
+export const removeCartItemService = async (cartItemId: number) => {
+    if (!cartItemId || cartItemId <= 0) throw new Error("Invalid cart item id");
+    return await removeCartItemInDB(cartItemId);
+}
